@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bookit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FBF8F3;--ink:#1A1208;--amber:#C8820A;--amber-l:#FDF3DE;--amber-m:#E8A020;
+  --sage:#2D5A3D;--sage-l:#E8F4EC;--rust:#B84C2A;--rust-l:#FAEAE4;
+  --blue:#1A3A6B;--blue-l:#E6F0FB;--purple:#4A3A8A;--purple-l:#EEECFA;
+  --stone:#8A8070;--stone-l:#F5F2EC;--white:#FFFFFF;--border:rgba(26,18,8,0.08);
+  --sh:0 2px 16px rgba(26,18,8,0.07);--sh-lg:0 12px 40px rgba(26,18,8,0.13);--sh-xl:0 24px 64px rgba(26,18,8,0.16);
+  --r:10px;--rl:16px;--rxl:24px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;--fa:'Cairo',sans-serif;
+  --nav:64px;--bot:64px;
+}
+body{font-family:var(--fb);background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;direction:ltr}
+button{font-family:var(--fb);cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--stone);border-radius:4px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:rgba(251,248,243,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;padding:0 20px;gap:12px}
+.logo{font-family:var(--fd);font-size:21px;font-weight:700;color:var(--amber);display:flex;align-items:center;gap:7px;white-space:nowrap;cursor:pointer}
+.logo-icon{width:32px;height:32px;background:var(--amber);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2}
+.logo span{color:var(--ink)}
+.ntabs{display:flex;gap:2px;margin:0 auto;background:var(--stone-l);border-radius:100px;padding:4px}
+.ntab{padding:7px 16px;border-radius:100px;font-size:13px;font-weight:500;color:var(--stone);cursor:pointer;transition:all .2s;white-space:nowrap}
+.ntab.on{background:var(--white);color:var(--ink);box-shadow:var(--sh)}
+.nacts{display:flex;align-items:center;gap:8px;margin-left:auto}
+.niBtn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--ink);position:relative}
+.niBtn:hover{background:var(--amber-l)}
+.niBtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--rust);border:2px solid var(--cream)}
+.av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber-m));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 2px 8px rgba(200,130,10,0.35)}
+.cbadge{position:absolute;top:-3px;right:-3px;background:var(--rust);color:white;width:15px;height:15px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--cream)}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;border:none}
+.btnP{background:var(--amber);color:white;box-shadow:0 4px 16px rgba(200,130,10,0.32)}
+.btnP:hover{background:#b8730a;transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,130,10,0.38)}
+.btnO{background:transparent;color:var(--ink);border:1.5px solid rgba(26,18,8,0.18)}
+.btnO:hover{background:var(--stone-l)}
+.btnS{background:var(--sage);color:white}
+.btnS:hover{background:#245030}
+.btnSm{padding:6px 14px;font-size:12px}
+.btnDanger{background:var(--rust);color:white}
+
+/* MAIN */
+.main{margin-top:var(--nav);padding-bottom:calc(var(--bot)+16px)}
+.pg{display:none;animation:fadeUp .28s ease}
+.pg.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#120D06 0%,#1E1208 50%,#2A1A0A 100%);padding:72px 24px 56px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:var(--cream);border-radius:40px 40px 0 0}
+.hbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(200,130,10,0.18);border:1px solid rgba(200,130,10,0.3);color:var(--amber-m);padding:5px 14px;border-radius:100px;font-size:11px;font-weight:600;margin-bottom:20px;letter-spacing:.5px;text-transform:uppercase}
+.hero h1{font-family:var(--fd);font-size:clamp(28px,5.5vw,52px);font-weight:700;color:white;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#E8A020,#F5C842);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:15px;color:rgba(255,255,255,.6);max-width:480px;margin:0 auto 28px;line-height:1.75}
+.hero-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.hstats{display:flex;gap:0;justify-content:center;margin-top:8px;flex-wrap:wrap;background:rgba(255,255,255,0.05);border-radius:var(--rl);padding:20px;max-width:500px;margin:0 auto;border:1px solid rgba(255,255,255,0.08)}
+.hstat{flex:1;text-align:center;padding:0 12px;border-right:1px solid rgba(255,255,255,0.1)}
+.hstat:last-child{border-right:none}
+.hstat .n{font-family:var(--fd);font-size:24px;font-weight:700;color:var(--amber-m)}
+.hstat .l{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+
+/* SECTION */
+.sec{padding:32px 20px}
+.sech{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sect{font-family:var(--fd);font-size:20px;font-weight:700}
+.seea{font-size:12px;color:var(--amber);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:3px}
+.seea:hover{text-decoration:underline}
+
+/* CATEGORIES */
+.cscroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.cscroll::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.chip svg{width:16px;height:16px;stroke:var(--stone);fill:none;stroke-width:1.8;transition:stroke .2s;flex-shrink:0}
+.chip.on,.chip:hover{background:var(--amber);color:white;border-color:var(--amber)}
+.chip.on svg,.chip:hover svg{stroke:white}
+
+/* BOOK CARDS */
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:14px}
+.bcard{background:var(--white);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:all .22s;position:relative}
+.bcard:hover{transform:translateY(-5px);box-shadow:var(--sh-lg)}
+.bcov{aspect-ratio:2/3;position:relative;overflow:hidden}
+.bcov-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;position:relative}
+.bcov::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:rgba(0,0,0,0.18);z-index:1}
+.bcov::after{content:'';position:absolute;left:6px;top:0;bottom:0;width:3px;background:rgba(255,255,255,0.12);z-index:1}
+.btitle-cover{font-family:var(--fd);font-size:12px;font-weight:700;text-align:center;line-height:1.3;z-index:2;position:relative}
+.bauthor-cover{font-size:10px;margin-top:6px;opacity:.7;z-index:2;position:relative;text-align:center}
+.bcond{position:absolute;top:7px;left:7px;background:rgba(26,18,8,0.72);color:white;font-size:9px;font-weight:700;padding:3px 7px;border-radius:100px;letter-spacing:.4px;z-index:3}
+.bfav{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:all .2s;z-index:3}
+.bfav:hover{transform:scale(1.12)}
+.bfav svg{width:13px;height:13px;stroke-width:2.2}
+.binfo{padding:10px 11px 12px}
+.btitle{font-weight:600;font-size:12.5px;line-height:1.3;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bauth{font-size:10.5px;color:var(--stone);margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bfoot{display:flex;align-items:center;justify-content:space-between}
+.bprice{font-weight:700;font-size:14px;color:var(--amber)}
+.brat{display:flex;align-items:center;gap:2px;font-size:10.5px;color:var(--stone)}
+.brat svg{width:10px;height:10px;fill:#F5A623}
+
+/* STORES */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.scard{background:var(--white);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:all .22s}
+.scard:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.sbanner{height:76px;position:relative}
+.slogo{position:absolute;bottom:-18px;left:14px;width:40px;height:40px;border-radius:11px;border:3px solid white;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;color:white;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.sverif{position:absolute;top:8px;right:8px;background:var(--sage);color:white;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;display:flex;align-items:center;gap:4px;letter-spacing:.3px}
+.sverif svg{width:10px;height:10px;stroke:white;fill:none;stroke-width:2.5}
+.sbody{padding:26px 14px 14px}
+.sname{font-weight:700;font-size:14px;margin-bottom:1px}
+.smeta{font-size:11px;color:var(--stone);margin-bottom:8px}
+.sstats{display:flex;gap:14px}
+.sstat{font-size:10px;color:var(--stone)}
+.sstat strong{display:block;font-size:13px;font-weight:600;color:var(--ink)}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bot);background:rgba(251,248,243,0.97);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;z-index:200}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px 4px;color:var(--stone);font-size:9.5px;font-weight:500;transition:all .2s;position:relative}
+.bni svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:all .2s}
+.bni.on{color:var(--amber)}
+.bni.on svg{stroke-width:2.2}
+.bni-dot{position:absolute;top:6px;right:calc(50% - 14px);width:6px;height:6px;border-radius:50%;background:var(--rust);border:1.5px solid var(--cream)}
+
+/* FILTER BAR */
+.fbar{display:flex;gap:8px;padding:14px 20px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.fbar::-webkit-scrollbar{display:none}
+.fchip{flex-shrink:0;padding:6px 14px;border-radius:100px;border:1.5px solid var(--border);font-size:11.5px;font-weight:500;cursor:pointer;transition:all .2s;background:var(--white);color:var(--ink)}
+.fchip.on,.fchip:hover{background:var(--ink);color:white;border-color:var(--ink)}
+
+/* SEARCH BAR */
+.sbar-wrap{padding:14px 20px;position:sticky;top:var(--nav);background:var(--cream);z-index:100;border-bottom:1px solid var(--border)}
+.sbar{display:flex;align-items:center;gap:8px;background:var(--white);border-radius:100px;padding:0 16px;box-shadow:var(--sh);border:1.5px solid var(--border)}
+.sbar input{flex:1;padding:11px 0;border:none;outline:none;font-size:13px;background:transparent;color:var(--ink)}
+.sbar svg{width:17px;height:17px;fill:none;stroke:var(--stone);stroke-width:2;flex-shrink:0}
+
+/* CARD LAYOUT */
+.card{background:var(--white);border-radius:var(--rl);padding:18px;box-shadow:var(--sh)}
+.card-xl{background:var(--white);border-radius:var(--rxl);padding:22px;box-shadow:var(--sh)}
+
+/* FORM */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;font-weight:500;margin-bottom:5px;color:var(--stone)}
+.fld input,.fld select,.fld textarea{width:100%;padding:10px 13px;border-radius:var(--r);border:1.5px solid var(--border);font-size:13px;outline:none;transition:border-color .2s;background:var(--cream);color:var(--ink)}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--amber);background:white}
+.fld textarea{resize:vertical;min-height:80px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ORDER STATUS */
+.ostatus{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:100px;font-size:10.5px;font-weight:600}
+.os-del{background:var(--sage-l);color:var(--sage)}
+.os-tra{background:var(--amber-l);color:var(--amber)}
+.os-pro{background:var(--rust-l);color:var(--rust)}
+.os-pen{background:var(--blue-l);color:var(--blue)}
+
+/* DASHBOARD */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:11px;padding:0 20px 14px}
+.dcard{background:var(--white);border-radius:var(--rl);padding:15px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.dcard::after{content:'';position:absolute;top:-16px;right:-16px;width:64px;height:64px;border-radius:50%;opacity:0.08}
+.dcicon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+.dcicon svg{width:20px;height:20px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dcnum{font-family:var(--fd);font-size:22px;font-weight:700;line-height:1}
+.dclbl{font-size:11px;color:var(--stone);margin-top:3px}
+.dctrend{font-size:10.5px;margin-top:6px;font-weight:600;display:flex;align-items:center;gap:3px}
+.tup{color:var(--sage)}
+.tdn{color:var(--rust)}
+
+/* PROFILE */
+.phdr{background:linear-gradient(160deg,#120D06,#1E1208,#2A1A0A);padding:36px 20px 52px;text-align:center;color:white;position:relative;overflow:hidden}
+.phdr::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(200,130,10,0.08)}
+.pav{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber-m));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:26px;color:white;margin:0 auto 14px;border:3px solid rgba(255,255,255,0.2);box-shadow:0 8px 24px rgba(200,130,10,0.35)}
+.pname{font-family:var(--fd);font-size:20px;font-weight:700}
+.pmeta{font-size:12px;opacity:.55;margin-top:3px}
+.pstats{display:flex;gap:24px;justify-content:center;margin-top:18px}
+.pstat .n{font-size:18px;font-weight:700}
+.pstat .l{font-size:10px;opacity:.55;margin-top:1px}
+.pbody{background:var(--cream);border-radius:var(--rxl) var(--rxl) 0 0;margin-top:-22px;padding:22px}
+.ptabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:18px}
+.ptab{flex:1;text-align:center;padding:9px;font-size:12px;font-weight:500;color:var(--stone);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:all .2s}
+.ptab.on{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* CHAT */
+.chat-layout{display:grid;grid-template-columns:270px 1fr;height:calc(100vh - var(--nav) - var(--bot));overflow:hidden}
+.clist{border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.clist-hdr{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.cthread{display:flex;gap:10px;padding:11px 14px;cursor:pointer;border-bottom:1px solid rgba(26,18,8,0.03);transition:all .15s}
+.cthread:hover,.cthread.on{background:var(--amber-l)}
+.cav{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;color:white;font-size:14px}
+.cprev{flex:1;min-width:0}
+.cname{font-weight:600;font-size:13px;margin-bottom:1px}
+.clast{font-size:11px;color:var(--stone);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctime{font-size:10px;color:var(--stone);flex-shrink:0}
+.cunread{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:5px}
+.msgs-wrap{display:flex;flex-direction:column;overflow:hidden}
+.msgs-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--white);flex-shrink:0}
+.msgs-area{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:7px}
+.msg{max-width:68%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.55}
+.msg-in{background:var(--white);color:var(--ink);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:var(--sh)}
+.msg-out{background:linear-gradient(135deg,var(--amber),#D4900E);color:white;border-bottom-right-radius:4px;align-self:flex-end}
+.mtime{font-size:9.5px;opacity:.55;margin-top:3px}
+.minput-area{padding:11px 14px;border-top:1px solid var(--border);display:flex;gap:9px;align-items:center;background:var(--white);flex-shrink:0}
+.minput{flex:1;padding:9px 15px;border-radius:100px;border:1.5px solid var(--border);font-size:13px;background:var(--cream);outline:none;transition:border-color .2s}
+.minput:focus{border-color:var(--amber)}
+.msend{width:38px;height:38px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s;box-shadow:0 3px 10px rgba(200,130,10,0.3)}
+.msend:hover{background:#b8730a}
+.msend svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* NOTIFICATIONS */
+.nitem{display:flex;gap:11px;padding:13px 20px;border-bottom:1px solid rgba(26,18,8,0.04);cursor:pointer;transition:all .15s}
+.nitem:hover{background:var(--amber-l)}
+.nitem.unread{background:rgba(200,130,10,0.04);border-left:3px solid var(--amber)}
+.nicon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nicon svg{width:18px;height:18px;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ntxt{flex:1;min-width:0}
+.ntitle{font-size:13px;font-weight:500;margin-bottom:1px;line-height:1.4}
+.ntime{font-size:11px;color:var(--stone)}
+.ndot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:5px}
+
+/* SETTINGS */
+.ssec{background:var(--white);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);margin-bottom:14px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid rgba(26,18,8,0.03);cursor:pointer;transition:all .15s}
+.srow:last-child{border-bottom:none}
+.srow:hover{background:var(--stone-l)}
+.srl{display:flex;align-items:center;gap:11px}
+.sicon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sicon svg{width:17px;height:17px;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.stitle{font-weight:500;font-size:13px}
+.ssub{font-size:11px;color:var(--stone)}
+.toggle{width:40px;height:22px;border-radius:100px;position:relative;cursor:pointer;transition:background .3s;background:#D0CBBF;flex-shrink:0}
+.toggle.on{background:var(--amber)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:white;transition:left .3s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.toggle.on::after{left:20px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--bot)+14px);left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:11px 20px;border-radius:100px;font-size:12.5px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:7px;box-shadow:var(--sh-lg)}
+.toast.on{opacity:1}
+.toast svg{width:15px;height:15px;fill:none;stroke:white;stroke-width:2.2;flex-shrink:0}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,18,8,0.55);z-index:500;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.overlay.on{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--white);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.34,1.2,.64,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:36px;height:3.5px;border-radius:2px;background:rgba(0,0,0,0.12);margin:0 auto 18px}
+
+/* CHECKOUT */
+.pay-opt{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:var(--r);border:1.5px solid var(--border);cursor:pointer;transition:all .2s;margin-bottom:8px}
+.pay-opt.on{border-color:var(--amber);background:var(--amber-l)}
+.pay-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.pay-opt.on .pay-radio{border-color:var(--amber);background:var(--amber)}
+.pay-radio-dot{width:8px;height:8px;border-radius:50%;background:white;display:none}
+.pay-opt.on .pay-radio-dot{display:block}
+.pay-icon{width:28px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.pay-label{font-size:13px;font-weight:500}
+
+/* CART */
+.citem{display:flex;gap:11px;padding:14px;background:var(--white);border-radius:var(--rl);box-shadow:var(--sh);margin-bottom:10px}
+.citem-cov{width:56px;flex-shrink:0;aspect-ratio:2/3;border-radius:7px;overflow:hidden;position:relative}
+.citem-info{flex:1;min-width:0}
+.citem-title{font-weight:600;font-size:13px;margin-bottom:2px}
+.citem-auth{font-size:11px;color:var(--stone);margin-bottom:6px}
+.citem-price{font-weight:700;font-size:15px;color:var(--amber)}
+.qbts{display:flex;align-items:center;gap:8px;margin-top:7px}
+.qbtn{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:all .2s}
+.qbtn:hover{background:var(--amber);color:white;border-color:var(--amber)}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+.sum-row.tot{font-weight:700;font-size:15px;border-top:1.5px solid var(--border);margin-top:7px;padding-top:11px}
+
+/* STORE PAGE */
+.stbanner{height:150px;position:relative;overflow:hidden}
+.stlogo{width:66px;height:66px;border-radius:18px;border:3px solid white;position:absolute;bottom:-33px;left:22px;display:flex;align-items:center;justify-content:center;font-size:26px;font-family:var(--fd);font-weight:700;color:white;box-shadow:var(--sh-lg)}
+.stbody{padding:44px 20px 20px}
+.verif-badge{display:inline-flex;align-items:center;gap:5px;background:var(--sage-l);color:var(--sage);padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700}
+.verif-badge svg{width:12px;height:12px;fill:none;stroke:var(--sage);stroke-width:2.5}
+
+/* BOOK DETAIL */
+.bd-cov{aspect-ratio:2/3;max-width:200px;margin:0 auto;border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh-xl);position:relative}
+.bd-cov::before{content:'';position:absolute;left:0;top:0;bottom:0;width:8px;background:rgba(0,0,0,0.22);z-index:1}
+.bd-acts{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.bd-acts .btn{flex:1;justify-content:center;min-width:110px}
+
+/* ANALYTICS */
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:100px;padding:0 4px}
+.cbar{flex:1;border-radius:4px 4px 0 0;transition:all .3s;cursor:pointer;position:relative}
+.cbar:hover{opacity:.85}
+.cbar-lbl{font-size:9px;color:var(--stone);text-align:center;margin-top:4px}
+.cbar-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:600;color:var(--ink);white-space:nowrap;opacity:0;transition:opacity .2s}
+.cbar:hover .cbar-val{opacity:1}
+
+/* LANDING FEATURES */
+.feat-card{background:var(--white);border-radius:var(--rxl);padding:22px;box-shadow:var(--sh);transition:all .22s}
+.feat-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.feat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.feat-icon svg{width:24px;height:24px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* BOOKSTORE DASH */
+.bstore-hdr{background:linear-gradient(135deg,#1A3A5C,#0D2440);padding:28px 20px;color:white;position:relative;overflow:hidden}
+.bstore-hdr::after{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05)}
+.inv-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.inv-row:last-child{border-bottom:none}
+.inv-cov{width:46px;height:69px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;padding:4px}
+.inv-info{flex:1;min-width:0}
+.inv-title{font-weight:600;font-size:13px;margin-bottom:1px}
+.inv-meta{font-size:11px;color:var(--stone)}
+.inv-price{font-weight:700;color:var(--amber);font-size:13px}
+.inv-stock{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px}
+.in-stock{background:var(--sage-l);color:var(--sage)}
+.low-stock{background:var(--amber-l);color:var(--amber)}
+.out-stock{background:var(--rust-l);color:var(--rust)}
+
+/* AUTH */
+.auth-wrap{min-height:calc(100vh - var(--nav));display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{background:var(--white);border-radius:var(--rxl);padding:32px;width:100%;max-width:400px;box-shadow:var(--sh-xl)}
+.atype-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.atype{padding:14px;border-radius:var(--rl);border:2px solid var(--border);cursor:pointer;transition:all .2s;text-align:center}
+.atype.on{border-color:var(--amber);background:var(--amber-l)}
+.atype-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.atype-icon svg{width:22px;height:22px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.atype.on .atype-icon svg{stroke:var(--amber)}
+.atype-icon svg{stroke:var(--stone)}
+.asocial{display:flex;gap:8px;margin-bottom:14px}
+.asocial-btn{flex:1;padding:10px;border-radius:var(--r);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .2s;background:var(--white)}
+.asocial-btn:hover{background:var(--stone-l)}
+.asocial-btn svg{width:16px;height:16px}
+.aor{text-align:center;color:var(--stone);font-size:12px;margin:12px 0;position:relative}
+.aor::before,.aor::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:var(--border)}
+.aor::before{left:0}.aor::after{right:0}
+
+/* PROMO BANNER */
+.promo{background:linear-gradient(135deg,var(--amber),#D4900E);border-radius:var(--rl);padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;cursor:pointer;transition:all .2s}
+.promo:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.promo-icon{width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.promo-icon svg{width:24px;height:24px;fill:none;stroke:white;stroke-width:2}
+.promo-title{font-weight:700;font-size:15px;color:white;margin-bottom:2px}
+.promo-sub{font-size:12px;color:rgba(255,255,255,0.8)}
+
+/* RECOMMEND */
+.rec-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 20px 8px;scrollbar-width:none}
+.rec-scroll::-webkit-scrollbar{display:none}
+.rec-card{flex-shrink:0;width:130px;background:var(--white);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:all .2s}
+.rec-card:hover{transform:translateY(-3px)}
+.rec-cov{width:100%;aspect-ratio:2/3;position:relative}
+.rec-info{padding:9px 9px 11px}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--stone)}
+.empty svg{width:48px;height:48px;fill:none;stroke:var(--stone);stroke-width:1.4;margin:0 auto 14px;opacity:.5}
+.empty-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+.empty-sub{font-size:13px;line-height:1.6}
+
+/* GRID UTILS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+@media(max-width:520px){
+  .ntabs{display:none}
+  .chat-layout{grid-template-columns:1fr}
+  .clist{display:none}
+  .hero h1{font-size:26px}
+  .bgrid{grid-template-columns:repeat(2,1fr)}
+  .hstats{gap:0}
+}
+
+/* DARK MODE */
+body.dark{
+  --cream:#1A1208;--ink:#F5F0E8;--white:#241A0E;--border:rgba(245,240,232,0.1);
+  --stone:#A89880;--stone-l:#2A1F10;
+  --amber-l:rgba(200,130,10,0.15);--sage-l:rgba(45,90,61,0.2);
+  --rust-l:rgba(184,76,42,0.2);--blue-l:rgba(26,58,107,0.2);--purple-l:rgba(74,58,138,0.2);
+  --sh:0 2px 16px rgba(0,0,0,0.3);--sh-lg:0 12px 40px rgba(0,0,0,0.45);--sh-xl:0 24px 64px rgba(0,0,0,0.5);
+}
+body.dark .nav{background:rgba(26,18,8,0.96)}
+body.dark .bnav{background:rgba(26,18,8,0.97)}
+body.dark .bcard,.dark .scard,.dark .card,.dark .card-xl,.dark .citem,.dark .auth-card{background:#241A0E}
+body.dark .sbar,.dark .fld input,.dark .fld select,.dark .fld textarea,.dark .minput{background:#2A1F10;color:var(--ink)}
+body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.dark .minput:focus{background:#321F10}
+
+/* SCROLL TO TOP BUTTON */
+.scroll-top{position:fixed;bottom:calc(var(--bot)+70px);right:16px;width:38px;height:38px;border-radius:50%;background:var(--amber);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:199;opacity:0;pointer-events:none;transition:all .3s;box-shadow:0 4px 14px rgba(200,130,10,0.4)}
+.scroll-top.show{opacity:1;pointer-events:auto}
+.scroll-top svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2.5}
+
+/* BADGE on wishlist nav */
+.bni-badge{position:absolute;top:5px;right:calc(50% - 14px);min-width:16px;height:16px;border-radius:100px;background:var(--rust);color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--cream);padding:0 3px}
+
+/* FEATURE SECTION on home */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+</style>
+</head>
+<body>
+
+<!-- SVG SYMBOLS -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="s-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+<symbol id="s-home" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21V12h6v9"/></symbol>
+<symbol id="s-store" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5"/><path d="M3 9a4 4 0 0 0 8 0m0 0a4 4 0 0 0 8 0"/><path d="M5 21h14V13"/><path d="M9 21v-6h6v6"/></symbol>
+<symbol id="s-market" viewBox="0 0 24 24"><path d="M6 2H3l-1 7h20l-1-7h-3"/><rect x="2" y="9" width="20" height="13" rx="2"/><path d="M8 9v3a4 4 0 0 0 8 0V9"/></symbol>
+<symbol id="s-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+<symbol id="s-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+<symbol id="s-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></symbol>
+<symbol id="s-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></symbol>
+<symbol id="s-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+<symbol id="s-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+<symbol id="s-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="s-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="s-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="s-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#F5A623"/></symbol>
+<symbol id="s-tag" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+<symbol id="s-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+<symbol id="s-exchange" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+<symbol id="s-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></symbol>
+<symbol id="s-money" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+<symbol id="s-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+<symbol id="s-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+<symbol id="s-truck" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+<symbol id="s-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+<symbol id="s-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+<symbol id="s-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+<symbol id="s-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+<symbol id="s-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+<symbol id="s-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+<symbol id="s-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+<symbol id="s-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+<symbol id="s-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+<symbol id="s-map" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+<symbol id="s-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="s-trend" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+<symbol id="s-discount" viewBox="0 0 24 24"><circle cx="9" cy="9" r="2"/><circle cx="15" cy="15" r="2"/><line x1="5" y1="19" x2="19" y2="5"/></symbol>
+<symbol id="s-inventory" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></symbol>
+<symbol id="s-promo" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M10 12h4M10 16h4"/><rect x="2" y="8" width="20" height="14" rx="2"/></symbol>
+<symbol id="s-banner" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+<!-- Category -->
+<symbol id="c-all" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+<symbol id="c-sci" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></symbol>
+<symbol id="c-his" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+<symbol id="c-tec" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+<symbol id="c-art" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></symbol>
+<symbol id="c-tra" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+<symbol id="c-coo" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22"/><path d="M9.5 4.27C13.5 5.5 18 8 18 18"/><path d="M3 22h18"/><path d="M20 10.17C17.33 9.33 14.08 9 10 9"/></symbol>
+<symbol id="c-psy" viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="c-bus" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></symbol>
+<symbol id="c-sel" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+<!-- Social -->
+<symbol id="sg" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></symbol>
+<symbol id="sf" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill="#1877F2" stroke="none"/></symbol>
+</svg>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo" onclick="go('home')">
+    <div class="logo-icon"><svg><use href="#s-book"/></svg></div>
+    Book<span>it</span>
+  </div>
+  <div class="ntabs">
+    <div class="ntab on" onclick="go('home')">Home</div>
+    <div class="ntab" onclick="go('marketplace')">Marketplace</div>
+    <div class="ntab" onclick="go('stores')">Bookstores</div>
+    <div class="ntab" onclick="go('dashboard')">Dashboard</div>
+  </div>
+  <div class="nacts">
+    <div class="niBtn" onclick="go('search')"><svg><use href="#s-search"/></svg></div>
+    <div class="niBtn" onclick="go('notifications')"><svg><use href="#s-bell"/></svg><div class="dot"></div></div>
+    <div class="niBtn" style="position:relative" onclick="go('cart')">
+      <svg><use href="#s-cart"/></svg>
+      <div class="cbadge" id="cbadge">2</div>
+    </div>
+    <div class="av" onclick="go('profile')">AJ</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ========== HOME ========== -->
+<div class="pg on" id="pg-home">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hbadge">
+      <svg width="11" height="11" fill="white" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      The Modern Book Marketplace · 2026
+    </div>
+    <h1>Buy, Sell &amp; Exchange<br>Books <em>You'll Love</em></h1>
+    <p>Join 50,000+ book lovers. Discover rare finds, sell your collection, and connect with verified bookstores near you.</p>
+    <div class="hero-acts">
+      <button class="btn btnP" onclick="go('marketplace')">
+        <svg width="15" height="15" fill="none" stroke="white" stroke-width="2"><use href="#s-market"/></svg>
+        Explore Books
+      </button>
+      <button class="btn btnO" style="color:white;border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.08)" onclick="go('auth')">
+        <svg width="15" height="15" fill="none" stroke="white" stroke-width="2"><use href="#s-plus"/></svg>
+        Sell a Book
+      </button>
+      <button class="btn btnO" style="color:white;border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.08)" onclick="go('store-dash')">
+        <svg width="15" height="15" fill="none" stroke="white" stroke-width="2"><use href="#s-store"/></svg>
+        Open Bookstore
+      </button>
+    </div>
+    <div class="hstats">
+      <div class="hstat"><div class="n">42K+</div><div class="l">Books Listed</div></div>
+      <div class="hstat"><div class="n">8.2K</div><div class="l">Active Sellers</div></div>
+      <div class="hstat"><div class="n">360+</div><div class="l">Bookstores</div></div>
+      <div class="hstat"><div class="n">4.9★</div><div class="l">Avg Rating</div></div>
+    </div>
+  </div>
+
+  <!-- Promo Banner -->
+  <div class="sec" style="padding-bottom:0">
+    <div class="promo" onclick="showToast('🎉 Promo applied! 20% off your next order')">
+      <div class="promo-icon"><svg><use href="#s-discount"/></svg></div>
+      <div>
+        <div class="promo-title">Flash Sale — 20% Off All Fiction</div>
+        <div class="promo-sub">Use code READER20 · Ends tonight at midnight</div>
+      </div>
+      <svg width="18" height="18" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><use href="#s-right"/></svg>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="sec" style="padding-bottom:12px">
+    <div class="sech"><div class="sect">Browse Categories</div></div>
+    <div class="cscroll">
+      <div class="chip on" onclick="setCat(this)"><svg><use href="#c-all"/></svg>All Books</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-sci"/></svg>Science</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-his"/></svg>History</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-tec"/></svg>Technology</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-art"/></svg>Art &amp; Design</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-tra"/></svg>Travel</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-coo"/></svg>Cooking</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-psy"/></svg>Psychology</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-bus"/></svg>Business</div>
+      <div class="chip" onclick="setCat(this)"><svg><use href="#c-sel"/></svg>Self-Help</div>
+    </div>
+  </div>
+
+  <!-- TRENDING -->
+  <div class="sec" style="padding-top:0">
+    <div class="sech">
+      <div class="sect">🔥 Trending Now</div>
+      <div class="seea" onclick="go('marketplace')">See all <svg width="12" height="12" fill="none" stroke="var(--amber)" stroke-width="2.5"><use href="#s-right"/></svg></div>
+    </div>
+    <div class="bgrid" id="home-books"></div>
+  </div>
+
+  <!-- TOP STORES -->
+  <div style="background:var(--stone-l);border-radius:var(--rxl);margin:0 20px;padding:20px">
+    <div class="sech">
+      <div class="sect">Top Bookstores</div>
+      <div class="seea" onclick="go('stores')">See all <svg width="12" height="12" fill="none" stroke="var(--amber)" stroke-width="2.5"><use href="#s-right"/></svg></div>
+    </div>
+    <div class="sgrid" id="home-stores"></div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="sec">
+    <div class="sech"><div class="sect">Why Bookit?</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--amber-l)"><svg style="stroke:var(--amber)"><use href="#s-shield"/></svg></div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:5px">Verified Sellers</div>
+        <div style="font-size:12px;color:var(--stone);line-height:1.65">Every seller is verified with buyer protection on every order.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-chat"/></svg></div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:5px">Direct Messaging</div>
+        <div style="font-size:12px;color:var(--stone);line-height:1.65">Chat with sellers, negotiate prices and ask questions.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-exchange"/></svg></div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:5px">Book Exchange</div>
+        <div style="font-size:12px;color:var(--stone);line-height:1.65">Trade your books directly with other readers. Zero cash needed.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--blue-l)"><svg style="stroke:var(--blue)"><use href="#s-chart"/></svg></div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:5px">Store Analytics</div>
+        <div style="font-size:12px;color:var(--stone);line-height:1.65">Professional dashboard with sales insights and inventory tools.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="sec" style="padding-top:0">
+    <div class="sech"><div class="sect">What Readers Say</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+      <div class="card">
+        <div style="display:flex;gap:2px;margin-bottom:9px"><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg></div>
+        <div style="font-size:13px;line-height:1.7;color:var(--ink);margin-bottom:14px;font-style:italic">"Found three rare editions I'd been searching for years. The seller communication was amazing!"</div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px">SR</div>
+          <div><div style="font-weight:600;font-size:13px">Sara Ramos</div><div style="font-size:11px;color:var(--stone)">Book Collector</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:2px;margin-bottom:9px"><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg></div>
+        <div style="font-size:13px;line-height:1.7;color:var(--ink);margin-bottom:14px;font-style:italic">"My bookstore doubled sales in 3 months. The analytics and inventory tools are incredible."</div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px">MK</div>
+          <div><div style="font-weight:600;font-size:13px">Marcus Kofi</div><div style="font-size:11px;color:var(--stone)">Bookstore Owner</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:2px;margin-bottom:9px"><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg><svg width="13" height="13"><use href="#s-star"/></svg></div>
+        <div style="font-size:13px;line-height:1.7;color:var(--ink);margin-bottom:14px;font-style:italic">"Sold my entire university collection in a week. Super easy listing, instant payouts!"</div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--rust);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px">LA</div>
+          <div><div style="font-weight:600;font-size:13px">Lena Ait</div><div style="font-size:11px;color:var(--stone)">Student</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,#120D06,#1E1208);border-radius:var(--rxl);margin:0 20px 20px;padding:36px 24px;text-align:center">
+    <div style="font-family:var(--fd);font-size:24px;color:white;margin-bottom:9px">Ready to Start Trading?</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:22px">Join 50,000+ book lovers already using Bookit</div>
+    <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btnP" onclick="go('auth')">Create Free Account</button>
+      <button class="btn" style="background:rgba(255,255,255,0.1);color:white;border:1.5px solid rgba(255,255,255,0.2)" onclick="go('store-dash')">Open a Bookstore</button>
+    </div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- ========== MARKETPLACE ========== -->
+<div class="pg" id="pg-marketplace">
+  <div class="sbar-wrap">
+    <div class="sbar">
+      <svg><use href="#s-search"/></svg>
+      <input placeholder="Search books, authors, genres…" id="mk-q" oninput="filterMk()">
+    </div>
+  </div>
+  <div class="fbar">
+    <div class="fchip on" onclick="setMkF(this,'all')">All</div>
+    <div class="fchip" onclick="setMkF(this,'buy')">Buy</div>
+    <div class="fchip" onclick="setMkF(this,'exchange')">Exchange</div>
+    <div class="fchip" onclick="setMkF(this,'new')">New</div>
+    <div class="fchip" onclick="setMkF(this,'used')">Used</div>
+    <div class="fchip" onclick="setMkF(this,'u10')">Under $10</div>
+    <div class="fchip" onclick="setMkF(this,'fiction')">Fiction</div>
+    <div class="fchip" onclick="setMkF(this,'tech')">Technology</div>
+    <div class="fchip" onclick="setMkF(this,'business')">Business</div>
+  </div>
+  <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:12px;color:var(--stone)" id="mk-count">Showing all books</div>
+    <div style="display:flex;gap:6px">
+      <div id="sort-price" style="padding:5px 12px;border-radius:100px;font-size:11px;border:1.5px solid var(--border);cursor:pointer;background:var(--white)" onclick="setSort('price')">Price ↑</div>
+      <div id="sort-rating" style="padding:5px 12px;border-radius:100px;font-size:11px;border:1.5px solid var(--border);cursor:pointer;background:var(--white)" onclick="setSort('rating')">Rating</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;padding:0 20px 20px" id="mk-books"></div>
+</div>
+
+<!-- ========== BOOKSTORES ========== -->
+<div class="pg" id="pg-stores">
+  <div class="sec">
+    <div style="font-family:var(--fd);font-size:22px;font-weight:700;margin-bottom:4px">Official Bookstores</div>
+    <div style="font-size:13px;color:var(--stone);margin-bottom:18px">Verified stores with professional catalogs</div>
+    <div class="sgrid" id="all-stores"></div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <div class="sech"><div class="sect">New Store Arrivals</div></div>
+    <div class="bgrid" id="store-new-books"></div>
+  </div>
+</div>
+
+<!-- ========== BOOK DETAIL ========== -->
+<div class="pg" id="pg-book-detail">
+  <div style="padding:14px 20px">
+    <button onclick="goBack()" style="display:flex;align-items:center;gap:5px;color:var(--stone);font-size:13px;margin-bottom:18px">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-back"/></svg>Back
+    </button>
+  </div>
+  <div id="bd-content"></div>
+</div>
+
+<!-- ========== STORE DETAIL ========== -->
+<div class="pg" id="pg-store-detail">
+  <div id="sd-content"></div>
+</div>
+
+<!-- ========== CART ========== -->
+<div class="pg" id="pg-cart">
+  <div class="sec">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px">
+      <svg width="20" height="20" fill="none" stroke="var(--ink)" stroke-width="2"><use href="#s-cart"/></svg>
+      <div style="font-family:var(--fd);font-size:20px;font-weight:700">Shopping Cart</div>
+    </div>
+    <div id="cart-items"></div>
+    <div class="card" style="margin-top:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px">Promo Code</div>
+      <div style="display:flex;gap:8px">
+        <input placeholder="Enter code" style="flex:1;padding:9px 13px;border-radius:var(--r);border:1.5px solid var(--border);font-size:13px;outline:none;background:var(--cream)">
+        <button class="btn btnP btnSm" onclick="showToast('✓ Code READER20 applied — 20% off!')">Apply</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="sum-row"><span>Subtotal</span><span id="cart-sub">$0.00</span></div>
+      <div class="sum-row"><span>Shipping</span><span style="color:var(--sage);font-weight:500">Free</span></div>
+      <div class="sum-row"><span>Discount (READER20)</span><span style="color:var(--rust)">-$3.00</span></div>
+      <div class="sum-row tot"><span>Total</span><span id="cart-tot">$0.00</span></div>
+    </div>
+    <button class="btn btnP" style="width:100%;justify-content:center;padding:14px;margin-top:12px;font-size:14px" onclick="go('checkout')">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2"><use href="#s-card"/></svg>
+      Proceed to Checkout
+    </button>
+  </div>
+</div>
+
+<!-- ========== CHECKOUT ========== -->
+<div class="pg" id="pg-checkout">
+  <div class="sec">
+    <button onclick="go('cart')" style="display:flex;align-items:center;gap:5px;color:var(--stone);font-size:13px;margin-bottom:18px">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-back"/></svg>Back to Cart
+    </button>
+    <div style="font-family:var(--fd);font-size:20px;font-weight:700;margin-bottom:18px">Checkout</div>
+    <!-- Steps -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:24px">
+      <div style="flex:1;text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:white;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px">1</div><div style="font-size:10px;color:var(--amber);font-weight:600">Address</div></div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--amber),var(--amber-l))"></div>
+      <div style="flex:1;text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--amber-l);color:var(--amber);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:2px solid var(--amber)">2</div><div style="font-size:10px;color:var(--stone)">Payment</div></div>
+      <div style="flex:1;height:2px;background:var(--stone-l)"></div>
+      <div style="flex:1;text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--stone-l);color:var(--stone);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px">3</div><div style="font-size:10px;color:var(--stone)">Confirm</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-weight:600;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" fill="none" stroke="var(--amber)" stroke-width="2"><use href="#s-map"/></svg>
+        Delivery Address
+      </div>
+      <div class="row2">
+        <div class="fld"><label>First Name</label><input value="Ahmed"></div>
+        <div class="fld"><label>Last Name</label><input value="Jalali"></div>
+      </div>
+      <div class="fld"><label>Street Address</label><input value="123 Book Street, Reading Quarter"></div>
+      <div class="row2">
+        <div class="fld"><label>City</label><input value="London"></div>
+        <div class="fld"><label>Postcode</label><input value="EC1A 1BB"></div>
+      </div>
+      <div class="fld"><label>Phone</label><input value="+44 7700 900000"></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-weight:600;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" fill="none" stroke="var(--amber)" stroke-width="2"><use href="#s-card"/></svg>
+        Payment Method
+      </div>
+      <div class="pay-opt on" onclick="selPay(this)">
+        <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+        <div class="pay-icon">💳</div><div class="pay-label">Credit / Debit Card</div>
+      </div>
+      <div class="pay-opt" onclick="selPay(this)">
+        <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+        <div class="pay-icon">🌐</div><div class="pay-label">PayPal</div>
+      </div>
+      <div class="pay-opt" onclick="selPay(this)">
+        <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+        <div class="pay-icon" style="font-size:16px">󰀄</div><div class="pay-label">Apple Pay</div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="fld"><label>Card Number</label><input value="4242 4242 4242 4242"></div>
+        <div class="row2">
+          <div class="fld"><label>Expiry</label><input value="12/27"></div>
+          <div class="fld"><label>CVV</label><input value="•••" type="password"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-weight:600;font-size:14px;margin-bottom:12px">Order Summary</div>
+      <div class="sum-row"><span>2 items</span><span>$31.98</span></div>
+      <div class="sum-row"><span>Shipping</span><span style="color:var(--sage)">Free</span></div>
+      <div class="sum-row"><span>Discount</span><span style="color:var(--rust)">-$3.00</span></div>
+      <div class="sum-row tot"><span>Total</span><span style="color:var(--amber)">$28.98</span></div>
+    </div>
+    <button class="btn btnP" style="width:100%;justify-content:center;padding:15px;font-size:14px" onclick="placeOrder()">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2"><use href="#s-check"/></svg>
+      Place Order — $28.98
+    </button>
+  </div>
+</div>
+
+<!-- ========== WISHLIST ========== -->
+<div class="pg" id="pg-wishlist">
+  <div class="sec">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px">
+      <svg width="20" height="20" fill="var(--rust)" stroke="var(--rust)" stroke-width="0"><use href="#s-heart"/></svg>
+      <div style="font-family:var(--fd);font-size:20px;font-weight:700">My Wishlist</div>
+    </div>
+    <div class="bgrid" id="wish-books"></div>
+  </div>
+</div>
+
+<!-- ========== SEARCH ========== -->
+<div class="pg" id="pg-search">
+  <div class="sbar-wrap">
+    <div class="sbar">
+      <svg><use href="#s-search"/></svg>
+      <input placeholder="Search books, authors, genres…" id="srch-q" oninput="doSearch()">
+    </div>
+  </div>
+  <div style="padding:16px 20px">
+    <div style="font-size:12px;color:var(--stone);margin-bottom:10px;font-weight:500">Recent Searches</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px">
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Atomic Habits')">Atomic Habits</div>
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Python')">Python</div>
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Sapiens')">Sapiens</div>
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Design')">Design</div>
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Dune')">Dune</div>
+      <div class="chip" style="padding:6px 14px;font-size:11.5px" onclick="setSearch('Psychology')">Psychology</div>
+    </div>
+    <div id="srch-results">
+      <div style="font-size:12px;color:var(--stone);margin-bottom:12px;font-weight:500">Popular Categories</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px" id="srch-cats"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MESSAGES ========== -->
+<div class="pg" id="pg-messages">
+  <div class="chat-layout">
+    <div class="clist">
+      <div class="clist-hdr">
+        <div style="font-weight:700;font-size:15px;margin-bottom:10px">Messages</div>
+        <div class="sbar" style="padding:0 12px"><svg width="15" height="15"><use href="#s-search"/></svg><input placeholder="Search…" style="flex:1;padding:8px 0;border:none;outline:none;font-size:12px;background:transparent"></div>
+      </div>
+      <div id="chat-threads"></div>
+    </div>
+    <div class="msgs-wrap">
+      <div class="msgs-hdr" id="msgs-hdr"></div>
+      <div class="msgs-area" id="msgs-area"></div>
+      <div class="minput-area">
+        <input class="minput" placeholder="Type a message…" id="m-input" onkeydown="sendMsg(event)">
+        <div class="msend" onclick="sendMsgClick()"><svg><use href="#s-send"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== NOTIFICATIONS ========== -->
+<div class="pg" id="pg-notifications">
+  <div style="padding:18px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:9px">
+      <svg width="19" height="19" fill="none" stroke="var(--ink)" stroke-width="2"><use href="#s-bell"/></svg>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700">Notifications</div>
+    </div>
+    <div style="font-size:12px;color:var(--amber);cursor:pointer;font-weight:500">Mark all read</div>
+  </div>
+  <div id="notif-list"></div>
+</div>
+
+<!-- ========== PROFILE ========== -->
+<div class="pg" id="pg-profile">
+  <div class="phdr">
+    <div class="pav">AJ</div>
+    <div class="pname">Ahmed Jalali</div>
+    <div class="pmeta">@ahmedj · Member since 2024</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:5px">
+        <svg width="12" height="12" fill="none" stroke="white" stroke-width="2"><use href="#s-shield"/></svg>
+        Verified Seller
+      </div>
+    </div>
+    <div class="pstats">
+      <div class="pstat"><div class="n">47</div><div class="l">Listed</div></div>
+      <div class="pstat"><div class="n">138</div><div class="l">Sold</div></div>
+      <div class="pstat"><div class="n">4.9★</div><div class="l">Rating</div></div>
+      <div class="pstat"><div class="n">89</div><div class="l">Reviews</div></div>
+    </div>
+  </div>
+  <div class="pbody">
+    <div style="display:flex;gap:9px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="btn btnP btnSm" onclick="openModal('list-modal')"><svg width="14" height="14" fill="none" stroke="white" stroke-width="2"><use href="#s-plus"/></svg>List Book</button>
+      <button class="btn btnO btnSm" onclick="go('messages')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-chat"/></svg>Message</button>
+      <button class="btn btnO btnSm" onclick="go('settings')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-settings"/></svg>Settings</button>
+    </div>
+    <div class="ptabs">
+      <div class="ptab on" onclick="ptab(this,'listings')">Listings</div>
+      <div class="ptab" onclick="ptab(this,'orders')">Orders</div>
+      <div class="ptab" onclick="ptab(this,'reviews')">Reviews</div>
+    </div>
+    <div id="pt-listings"><div class="bgrid" id="prof-books"></div></div>
+    <div id="pt-orders" style="display:none"><div id="prof-orders"></div></div>
+    <div id="pt-reviews" style="display:none"><div id="prof-reviews"></div></div>
+  </div>
+</div>
+
+<!-- ========== PERSONAL DASHBOARD ========== -->
+<div class="pg" id="pg-dashboard">
+  <div style="padding:18px 20px 8px">
+    <div style="font-size:12px;color:var(--stone)">Good morning,</div>
+    <div style="font-family:var(--fd);font-size:20px;font-weight:700">Ahmed's Dashboard</div>
+  </div>
+  <!-- Quick Actions -->
+  <div style="display:flex;gap:8px;padding:8px 20px 16px;overflow-x:auto;scrollbar-width:none">
+    <button class="btn btnP btnSm" onclick="openModal('list-modal')"><svg width="14" height="14" fill="none" stroke="white" stroke-width="2"><use href="#s-plus"/></svg>List Book</button>
+    <button class="btn btnO btnSm" onclick="go('messages')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-chat"/></svg>Messages</button>
+    <button class="btn btnO btnSm" onclick="go('wishlist')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-heart"/></svg>Wishlist</button>
+    <button class="btn btnO btnSm" onclick="go('store-dash')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-store"/></svg>My Store</button>
+  </div>
+  <!-- Metrics -->
+  <div class="dgrid">
+    <div class="dcard">
+      <div class="dcicon" style="background:var(--amber-l)"><svg style="stroke:var(--amber)"><use href="#s-money"/></svg></div>
+      <div class="dcnum">$1,247</div><div class="dclbl">Total Earnings</div>
+      <div class="dctrend tup"><svg width="12" height="12" fill="none" stroke="var(--sage)" stroke-width="2"><use href="#s-trend"/></svg>↑ 18%</div>
+    </div>
+    <div class="dcard">
+      <div class="dcicon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-box"/></svg></div>
+      <div class="dcnum">47</div><div class="dclbl">Active Listings</div>
+      <div class="dctrend tup">↑ 5 new</div>
+    </div>
+    <div class="dcard">
+      <div class="dcicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-bag"/></svg></div>
+      <div class="dcnum">138</div><div class="dclbl">Books Sold</div>
+      <div class="dctrend tup">↑ 12 this week</div>
+    </div>
+    <div class="dcard">
+      <div class="dcicon" style="background:#FEF9E7"><svg width="20" height="20"><use href="#s-star"/></svg></div>
+      <div class="dcnum">4.9</div><div class="dclbl">Avg Rating</div>
+      <div class="dctrend" style="color:var(--stone)">89 reviews</div>
+    </div>
+  </div>
+  <!-- Chart -->
+  <div class="sec" style="padding-top:0">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-weight:600;font-size:14px">Monthly Sales</div>
+        <div style="font-size:11px;color:var(--stone)">Last 7 months</div>
+      </div>
+      <div class="chart-bar-wrap" id="dash-chart"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px" id="dash-chart-lbls"></div>
+    </div>
+  </div>
+  <!-- Recent Orders -->
+  <div class="sec" style="padding-top:0">
+    <div class="sech"><div class="sect" style="font-size:17px">Recent Orders</div><div class="seea">View all</div></div>
+    <div id="dash-orders"></div>
+  </div>
+</div>
+
+<!-- ========== BOOKSTORE DASHBOARD ========== -->
+<div class="pg" id="pg-store-dash">
+  <div class="bstore-hdr">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid rgba(255,255,255,0.2)">📚</div>
+      <div>
+        <div style="font-family:var(--fd);font-size:18px;color:white;font-weight:700">BookNest Store</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2.5"><use href="#s-check"/></svg>
+          Verified Bookstore · London
+        </div>
+      </div>
+      <button class="btn btnSm" style="margin-left:auto;background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.2)" onclick="openStore(1)">View Store</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      ${[['$24,780','Revenue','↑ 22%'],['342','Books','↑ 18'],['1,240','Orders','↑ 94'],['4.9★','Rating','98% pos']].map(([v,l,t])=>`<div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;text-align:center"><div style="font-family:var(--fd);font-size:17px;color:white;font-weight:700">${v}</div><div style="font-size:10px;color:rgba(255,255,255,0.5);margin:1px 0">${l}</div><div style="font-size:10px;color:#7EDCA0;font-weight:600">${t}</div></div>`).join('')}
+    </div>
+  </div>
+  <!-- Store Tabs -->
+  <div class="ptabs" style="background:var(--white);padding:0 20px;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+    <div class="ptab on" onclick="storeTab(this,'inventory')">Inventory</div>
+    <div class="ptab" onclick="storeTab(this,'orders')">Orders</div>
+    <div class="ptab" onclick="storeTab(this,'analytics')">Analytics</div>
+    <div class="ptab" onclick="storeTab(this,'promotions')">Promotions</div>
+  </div>
+  <!-- Inventory -->
+  <div id="st-inventory">
+    <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:13px;color:var(--stone)">342 books in catalog</div>
+      <button class="btn btnP btnSm" onclick="openModal('list-modal')">
+        <svg width="13" height="13" fill="none" stroke="white" stroke-width="2"><use href="#s-plus"/></svg>Add Book
+      </button>
+    </div>
+    <div class="card" style="margin:0 20px 20px">
+      <div id="inv-list"></div>
+    </div>
+  </div>
+  <!-- Orders -->
+  <div id="st-orders" style="display:none">
+    <div class="sec" style="padding-top:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px">
+        ${[['12','New Orders','var(--amber-l)','var(--amber)'],['8','Processing','var(--blue-l)','var(--blue)'],['94','Shipped','var(--sage-l)','var(--sage)'],['3','Returns','var(--rust-l)','var(--rust)']].map(([n,l,bg,c])=>`<div class="card" style="background:${bg};border-left:3px solid ${c};padding:12px"><div style="font-family:var(--fd);font-size:20px;font-weight:700;color:${c}">${n}</div><div style="font-size:11px;color:${c};font-weight:500">${l}</div></div>`).join('')}
+      </div>
+      <div id="store-orders-list"></div>
+    </div>
+  </div>
+  <!-- Analytics -->
+  <div id="st-analytics" style="display:none">
+    <div class="sec" style="padding-top:14px">
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:4px">Revenue Overview</div>
+        <div style="font-size:12px;color:var(--stone);margin-bottom:14px">Monthly performance · 2026</div>
+        <div class="chart-bar-wrap" id="store-chart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px" id="store-chart-lbls"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="card"><div style="font-size:11px;color:var(--stone);margin-bottom:4px">Best Seller</div><div style="font-weight:600;font-size:13px">Atomic Habits</div><div style="font-size:12px;color:var(--amber);font-weight:600">142 sold</div></div>
+        <div class="card"><div style="font-size:11px;color:var(--stone);margin-bottom:4px">Avg Order Value</div><div style="font-weight:600;font-size:20px;font-family:var(--fd)">$18.50</div></div>
+        <div class="card"><div style="font-size:11px;color:var(--stone);margin-bottom:4px">Conversion Rate</div><div style="font-weight:600;font-size:20px;font-family:var(--fd);color:var(--sage)">3.8%</div></div>
+        <div class="card"><div style="font-size:11px;color:var(--stone);margin-bottom:4px">Return Visitors</div><div style="font-weight:600;font-size:20px;font-family:var(--fd);color:var(--blue)">62%</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Promotions -->
+  <div id="st-promotions" style="display:none">
+    <div class="sec" style="padding-top:14px">
+      <button class="btn btnP btnSm" style="margin-bottom:14px" onclick="showToast('✓ New promotion created!')">
+        <svg width="13" height="13" fill="none" stroke="white" stroke-width="2"><use href="#s-plus"/></svg>Create Promotion
+      </button>
+      ${[['🏷️ Flash Sale','20% off all Fiction','Active · Ends today','var(--amber)','var(--amber-l)'],['🎁 Bundle Deal','Buy 3 Get 1 Free','Active · Ongoing','var(--sage)','var(--sage-l)'],['📦 Free Shipping','Orders over $25','Paused','var(--stone)','var(--stone-l)']].map(([ico,title,status,col,bg])=>`<div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="font-size:22px">${ico}</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:13px">${title}</div><div style="font-size:11px;color:${col};font-weight:500;margin-top:2px">${status}</div></div>
+        <button class="btn btnO btnSm">Edit</button>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ========== AUTH ========== -->
+<div class="pg" id="pg-auth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div style="text-align:center;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:8px">
+        <div class="logo-icon"><svg><use href="#s-book"/></svg></div>
+        <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--amber)">Bookit</div>
+      </div>
+      <div style="display:flex;background:var(--stone-l);border-radius:100px;padding:3px;margin-bottom:20px">
+        <div id="at-signin" onclick="authTab('in')" style="flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;background:white;box-shadow:var(--sh);color:var(--ink)">Sign In</div>
+        <div id="at-reg" onclick="authTab('reg')" style="flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--stone)">Register</div>
+      </div>
+      <div id="auth-signin">
+        <div class="asocial">
+          <div class="asocial-btn"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
+          <div class="asocial-btn"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
+        </div>
+        <div class="aor">or continue with email</div>
+        <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+        <div class="fld"><label>Password</label><input type="password" placeholder="••••••••"></div>
+        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="go('dashboard');showToast('👋 Welcome back!')">Sign In</button>
+        <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--stone)">Forgot password? <span style="color:var(--amber);cursor:pointer">Reset</span></div>
+      </div>
+      <div id="auth-reg" style="display:none">
+        <div style="font-size:12.5px;font-weight:600;margin-bottom:10px">Choose Account Type</div>
+        <div class="atype-grid">
+          <div class="atype on" onclick="selAtype(this)">
+            <div class="atype-icon" style="background:var(--amber-l)"><svg><use href="#s-user"/></svg></div>
+            <div style="font-weight:600;font-size:13px">Personal</div>
+            <div style="font-size:10.5px;color:var(--stone);margin-top:2px">Buy, sell &amp; exchange</div>
+          </div>
+          <div class="atype" onclick="selAtype(this)">
+            <div class="atype-icon" style="background:var(--blue-l)"><svg><use href="#s-store"/></svg></div>
+            <div style="font-weight:600;font-size:13px">Bookstore</div>
+            <div style="font-size:10.5px;color:var(--stone);margin-top:2px">Professional store</div>
+          </div>
+        </div>
+        <div class="asocial">
+          <div class="asocial-btn"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
+          <div class="asocial-btn"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
+        </div>
+        <div class="aor">or register with email</div>
+        <div class="fld"><label>Full Name</label><input placeholder="Ahmed Jalali"></div>
+        <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+        <div class="fld"><label>Password</label><input type="password" placeholder="Create password"></div>
+        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="go('dashboard');showToast('🎉 Account created!')">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SETTINGS ========== -->
+<div class="pg" id="pg-settings">
+  <div style="padding:18px 20px 14px;display:flex;align-items:center;gap:9px">
+    <svg width="18" height="18" fill="none" stroke="var(--ink)" stroke-width="2"><use href="#s-settings"/></svg>
+    <div style="font-family:var(--fd);font-size:18px;font-weight:700">Settings</div>
+  </div>
+  <div style="padding:0 20px">
+    <!-- Profile -->
+    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Account</div>
+    <div class="ssec">
+      <div class="srow" onclick="go('profile')">
+        <div class="srl"><div class="sicon" style="background:var(--amber-l)"><svg style="stroke:var(--amber)"><use href="#s-user"/></svg></div><div><div class="stitle">Edit Profile</div><div class="ssub">Name, photo, bio</div></div></div>
+        <svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg>
+      </div>
+      <div class="srow">
+        <div class="srl"><div class="sicon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-lock"/></svg></div><div><div class="stitle">Privacy &amp; Security</div><div class="ssub">Password, 2FA</div></div></div>
+        <svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg>
+      </div>
+      <div class="srow">
+        <div class="srl"><div class="sicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-card"/></svg></div><div><div class="stitle">Payment Methods</div><div class="ssub">Cards, PayPal, bank</div></div></div>
+        <svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg>
+      </div>
+      <div class="srow">
+        <div class="srl"><div class="sicon" style="background:var(--blue-l)"><svg style="stroke:var(--blue)"><use href="#s-map"/></svg></div><div><div class="stitle">Saved Addresses</div><div class="ssub">Delivery locations</div></div></div>
+        <svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Notifications</div>
+    <div class="ssec">
+      <div class="srow"><div class="srl"><div class="sicon" style="background:#EEF4FF"><svg style="stroke:#4860C8"><use href="#s-bell"/></svg></div><div><div class="stitle">Push Notifications</div><div class="ssub">Orders, messages, deals</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="srl"><div class="sicon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-mail"/></svg></div><div><div class="stitle">Email Updates</div><div class="ssub">Weekly digest</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="srl"><div class="sicon" style="background:var(--stone-l)"><svg style="stroke:var(--stone)"><use href="#s-moon"/></svg></div><div><div class="stitle">Dark Mode</div><div class="ssub">Switch theme</div></div></div><div class="toggle" id="dark-toggle" onclick="toggleDark()"></div></div>
+    </div>
+    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Seller</div>
+    <div class="ssec">
+      <div class="srow" onclick="go('dashboard')"><div class="srl"><div class="sicon" style="background:var(--amber-l)"><svg style="stroke:var(--amber)"><use href="#s-chart"/></svg></div><div><div class="stitle">Seller Dashboard</div><div class="ssub">Sales, analytics, listings</div></div></div><svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg></div>
+      <div class="srow" onclick="go('store-dash')"><div class="srl"><div class="sicon" style="background:var(--blue-l)"><svg style="stroke:var(--blue)"><use href="#s-store"/></svg></div><div><div class="stitle">Bookstore Dashboard</div><div class="ssub">Manage your store</div></div></div><svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg></div>
+    </div>
+    <div class="ssec">
+      <div class="srow" onclick="go('auth')"><div class="srl"><div class="sicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-logout"/></svg></div><div><div class="stitle" style="color:var(--rust)">Log Out</div></div></div></div>
+    </div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <div class="bni on" id="bn-home" onclick="go('home')"><svg><use href="#s-home"/></svg>Home</div>
+  <div class="bni" id="bn-marketplace" onclick="go('marketplace')"><svg><use href="#s-market"/></svg>Market</div>
+  <div class="bni" id="bn-messages" onclick="go('messages')"><svg><use href="#s-chat"/></svg>Chat<div class="bni-dot"></div></div>
+  <div class="bni" id="bn-wishlist" onclick="go('wishlist')"><svg><use href="#s-heart"/></svg>Saved</div>
+  <div class="bni" id="bn-dashboard" onclick="go('dashboard')"><svg><use href="#s-user"/></svg>Profile</div>
+</nav>
+
+<!-- MODAL: List Book -->
+<div class="overlay" id="list-modal">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px">
+      <svg width="20" height="20" fill="none" stroke="var(--amber)" stroke-width="2"><use href="#s-book"/></svg>
+      <div style="font-family:var(--fd);font-size:19px;font-weight:700">List a Book</div>
+    </div>
+    <div class="fld"><label>Book Title *</label><input placeholder="e.g. Atomic Habits"></div>
+    <div class="fld"><label>Author *</label><input placeholder="e.g. James Clear"></div>
+    <div class="row2">
+      <div class="fld"><label>Price ($)</label><input type="number" placeholder="12.00"></div>
+      <div class="fld"><label>Condition</label><select><option>New</option><option>Like New</option><option>Good</option><option>Fair</option></select></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label>Category</label><select><option>Self-Help</option><option>Technology</option><option>Fiction</option><option>History</option><option>Business</option><option>Science</option></select></div>
+      <div class="fld"><label>Listing Type</label><select><option>For Sale</option><option>For Exchange</option><option>Sale or Exchange</option></select></div>
+    </div>
+    <div class="fld"><label>Description</label><textarea placeholder="Brief description of the book condition, edition, notes..."></textarea></div>
+    <!-- Upload -->
+    <div id="upload-zone" style="border:2px dashed rgba(200,130,10,0.35);border-radius:var(--rl);padding:22px;text-align:center;cursor:pointer;margin-bottom:14px;transition:all .2s" onmouseenter="this.style.borderColor='var(--amber)';this.style.background='var(--amber-l)'" onmouseleave="this.style.borderColor='rgba(200,130,10,0.35)';this.style.background='transparent'">
+      <svg width="28" height="28" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 7px;display:block"><use href="#s-upload"/></svg>
+      <div style="font-size:12.5px;font-weight:600;color:var(--amber);margin-bottom:3px">Upload Book Cover</div>
+      <div style="font-size:11px;color:var(--stone)">Drag &amp; drop or tap to browse · JPG, PNG up to 5MB</div>
+    </div>
+    <div style="display:flex;gap:9px">
+      <button class="btn btnO" style="flex:1;justify-content:center" onclick="closeModal('list-modal')">Cancel</button>
+      <button class="btn btnP" style="flex:1;justify-content:center" onclick="closeModal('list-modal');showToast('📚 Book listed successfully!')">Publish Listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg><use href="#s-check"/></svg>
+  <span id="toast-txt"></span>
+</div>
+
+<!-- SCROLL TO TOP -->
+<div class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</div>
+
+<script>
+// ===== DATA =====
+const BOOKS=[
+  {id:1,title:'Atomic Habits',author:'James Clear',price:14.99,rating:4.9,cat:'Self-Help',cond:'New',col:'#C8820A',bg:'#FDF3DE',type:'buy',seller:'BookNest',verified:true,desc:'An Easy & Proven Way to Build Good Habits & Break Bad Ones. Transform your life with tiny changes.',reviews:1420},
+  {id:2,title:'Sapiens',author:'Yuval Harari',price:11.99,rating:4.8,cat:'History',cond:'Like New',col:'#2D5A3D',bg:'#E8F4EC',type:'buy',seller:'ahmed_reads',verified:false,desc:'A Brief History of Humankind. Harari\'s thrilling narrative of humanity\'s creation and evolution.',reviews:982},
+  {id:3,title:'The Great Gatsby',author:'F. Scott Fitzgerald',price:7.99,rating:4.6,cat:'Fiction',cond:'Good',col:'#B84C2A',bg:'#FAEAE4',type:'exchange',seller:'bookworm22',verified:false,desc:'The story of the mysteriously wealthy Jay Gatsby and his love for Daisy Buchanan.',reviews:654},
+  {id:4,title:'Clean Code',author:'Robert C. Martin',price:28.00,rating:4.7,cat:'Technology',cond:'New',col:'#1A1208',bg:'#F5F2EC',type:'buy',seller:'TechBooks Ltd',verified:true,desc:'A Handbook of Agile Software Craftsmanship. Essential reading for any programmer.',reviews:2103},
+  {id:5,title:'Dune',author:'Frank Herbert',price:9.99,rating:4.9,cat:'Fiction',cond:'Like New',col:'#B8730A',bg:'#FDF3DE',type:'buy',seller:'dune_fan',verified:false,desc:'Set in the distant future, Dune follows Paul Atreides as his family takes control of desert planet Arrakis.',reviews:3201},
+  {id:6,title:'Thinking Fast & Slow',author:'Daniel Kahneman',price:13.50,rating:4.8,cat:'Psychology',cond:'Good',col:'#2D5A3D',bg:'#E8F4EC',type:'buy',seller:'mindbooks',verified:false,desc:'A groundbreaking tour of the mind and how we make choices, by Nobel Prize winner Daniel Kahneman.',reviews:1876},
+  {id:7,title:'The Design of Everyday Things',author:'Don Norman',price:19.99,rating:4.7,cat:'Art & Design',cond:'New',col:'#4A3A8A',bg:'#EEECFA',type:'buy',seller:'DesignHub Store',verified:true,desc:'Why some products satisfy customers while others only frustrate them.',reviews:743},
+  {id:8,title:'Educated',author:'Tara Westover',price:8.99,rating:4.9,cat:'History',cond:'Good',col:'#B84C2A',bg:'#FAEAE4',type:'exchange',seller:'tara_reader',verified:false,desc:'A memoir about a young girl who grows up in a survivalist family in the mountains of Idaho.',reviews:2876},
+  {id:9,title:'Deep Work',author:'Cal Newport',price:12.00,rating:4.7,cat:'Business',cond:'Like New',col:'#1A3A6B',bg:'#E6F0FB',type:'buy',seller:'productivity_books',verified:false,desc:'Rules for Focused Success in a Distracted World.',reviews:1290},
+  {id:10,title:'The Alchemist',author:'Paulo Coelho',price:6.99,rating:4.8,cat:'Fiction',cond:'Good',col:'#6B3D6B',bg:'#F5EEF5',type:'exchange',seller:'coelho_fan',verified:false,desc:'A novel about a young Andalusian shepherd\'s journey to find a worldly treasure.',reviews:4523},
+  {id:11,title:'Zero to One',author:'Peter Thiel',price:15.99,rating:4.6,cat:'Business',cond:'New',col:'#1A1208',bg:'#F5F2EC',type:'buy',seller:'StartupBooks',verified:true,desc:'Notes on Startups, or How to Build the Future.',reviews:987},
+  {id:12,title:'1984',author:'George Orwell',price:5.99,rating:4.9,cat:'Fiction',cond:'Good',col:'#2D1F0A',bg:'#F5F2EC',type:'exchange',seller:'orwell_lover',verified:false,desc:'A dystopian social science fiction novel set in Airstrip One (formerly Great Britain).',reviews:5671},
+  {id:13,title:'Ikigai',author:'Héctor García',price:10.99,rating:4.7,cat:'Self-Help',cond:'New',col:'#B84C2A',bg:'#FAEAE4',type:'buy',seller:'BookNest',verified:true,desc:'The Japanese secret to a long and happy life.',reviews:876},
+  {id:14,title:'A Brief History of Time',author:'Stephen Hawking',price:9.50,rating:4.8,cat:'Science',cond:'Good',col:'#1A3A6B',bg:'#E6F0FB',type:'buy',seller:'scibooks',verified:false,desc:'A landmark volume in science writing by one of the great minds of our time.',reviews:2341},
+];
+
+const STORES=[
+  {id:1,name:'BookNest',ico:'📚',col:'#C8820A',banner:'linear-gradient(135deg,#120D06,#2A1A0A)',books:342,rating:4.9,city:'London',reviews:1240,desc:'Premium books curated for curious minds. New arrivals every week from around the world.'},
+  {id:2,name:'TechBooks Ltd',ico:'💻',col:'#2D5A3D',banner:'linear-gradient(135deg,#0D2A1A,#2D5A3D)',books:156,rating:4.8,city:'Manchester',reviews:876,desc:'The go-to destination for technology, programming and engineering books.'},
+  {id:3,name:'DesignHub',ico:'🎨',col:'#4A3A8A',banner:'linear-gradient(135deg,#150E40,#4A3A8A)',books:89,rating:4.7,city:'Bristol',reviews:543,desc:'Art, design, architecture and creativity books for visual thinkers.'},
+  {id:4,name:'StartupBooks',ico:'🚀',col:'#B84C2A',banner:'linear-gradient(135deg,#3A1208,#B84C2A)',books:203,rating:4.6,city:'Edinburgh',reviews:678,desc:'Business, entrepreneurship and innovation. Fuel your startup journey.'},
+];
+
+const CHATS=[
+  {id:1,name:'Sara Ramos',ini:'SR',col:'#C8820A',prev:'Is the book still available?',time:'2m',unread:true,msgs:[{out:false,txt:'Hi! Is Atomic Habits still available?',t:'10:32'},{out:true,txt:'Yes! Great condition, barely read.',t:'10:33'},{out:false,txt:'Is the book still available?',t:'10:35'}]},
+  {id:2,name:'BookNest Store',ini:'BN',col:'#2D5A3D',prev:'Your order has been shipped!',time:'1h',unread:true,msgs:[{out:false,txt:'Thank you for your order! Books have been packed.',t:'09:10'},{out:true,txt:'When will it arrive?',t:'09:15'},{out:false,txt:'Your order has been shipped! Expected 2-3 days.',t:'09:20'}]},
+  {id:3,name:'Marcus Kofi',ini:'MK',col:'#4A3A8A',prev:"I'm interested in exchange",time:'3h',unread:false,msgs:[{out:false,txt:"I'd like to exchange Dune for your Sapiens.",t:'07:00'},{out:true,txt:'What condition is your Dune copy?',t:'07:05'},{out:false,txt:"I'm interested in exchange — nearly perfect condition.",t:'07:10'}]},
+  {id:4,name:'Lena Ait',ini:'LA',col:'#B84C2A',prev:'Thanks for the quick delivery!',time:'1d',unread:false,msgs:[{out:false,txt:'Book arrived today. Thanks for the quick delivery!',t:'Yesterday'}]},
+];
+
+const NOTIFS=[
+  {ico:'s-truck',bg:'#FDF3DE',sc:'#C8820A',title:'Your order for "Atomic Habits" has been shipped',time:'2 minutes ago',unread:true},
+  {ico:'s-chat',bg:'#E8F4EC',sc:'#2D5A3D',title:'Sara Ramos sent you a message about your listing',time:'15 minutes ago',unread:true},
+  {ico:'s-star',bg:'#FEF9E7',sc:'#C8820A',title:'New 5-star review on your "Sapiens" listing',time:'1 hour ago',unread:true},
+  {ico:'s-money',bg:'#FAEAE4',sc:'#B84C2A',title:'"Clean Code" sold for $28.00 — payment received',time:'3 hours ago',unread:false},
+  {ico:'s-heart',bg:'#FDF3DE',sc:'#C8820A',title:'12 people wishlisted your books today',time:'5 hours ago',unread:false},
+  {ico:'s-tag',bg:'#E8F4EC',sc:'#2D5A3D',title:'BookNest has a 20% sale on Science books',time:'Yesterday',unread:false},
+  {ico:'s-exchange',bg:'#EEECFA',sc:'#4A3A8A',title:'Marcus Kofi wants to exchange with your listing',time:'2 days ago',unread:false},
+];
+
+const ORDERS=[
+  {title:'Atomic Habits',author:'James Clear',price:'$14.99',status:'In Transit',sc:'os-tra',date:'May 15, 2026'},
+  {title:'Sapiens',author:'Yuval Harari',price:'$11.99',status:'Delivered',sc:'os-del',date:'May 10, 2026'},
+  {title:'Clean Code',author:'Robert C. Martin',price:'$28.00',status:'Processing',sc:'os-pro',date:'May 16, 2026'},
+  {title:'Dune',author:'Frank Herbert',price:'$9.99',status:'Pending',sc:'os-pen',date:'May 17, 2026'},
+];
+
+const INVENTORY=[
+  {title:'Atomic Habits',stock:18,price:'$14.99',sold:142,sc:'in-stock'},
+  {title:'Clean Code',stock:7,price:'$28.00',sold:54,sc:'low-stock'},
+  {title:'Sapiens',stock:0,price:'$11.99',sold:89,sc:'out-stock'},
+  {title:'Zero to One',stock:23,price:'$15.99',sold:37,sc:'in-stock'},
+  {title:'Deep Work',stock:5,price:'$12.00',sold:61,sc:'low-stock'},
+];
+
+// STATE
+let curPage='home',prevPage='home';
+let cart=[{b:BOOKS[0],q:1},{b:BOOKS[3],q:1}];
+let wishlist=[1,4,7,9];
+let activeChat=0;
+let mkFilter='all',mkQ='',mkSort='default';
+
+// HELPERS
+const $ = id => document.getElementById(id);
+const stars=()=>`<svg width="10" height="10"><use href="#s-star"/></svg>`;
+function heartSVG(on){return`<svg width="13" height="13" fill="${on?'var(--rust)':'none'}" stroke="${on?'var(--rust)':'#666'}" stroke-width="2.2"><use href="#s-heart"/></svg>`}
+
+// BOOK CARD
+function bcard(b,fn){
+  const fav=wishlist.includes(b.id);
+  const exch=b.type==='exchange';
+  return`<div class="bcard" onclick="${fn}">
+    <div class="bcov" style="background:${b.bg}">
+      <div class="bcov-inner">
+        <div class="btitle-cover" style="color:${b.col}">${b.title}</div>
+        <div class="bauthor-cover" style="color:${b.col}">${b.author}</div>
+      </div>
+      <div class="bcond">${b.cond}</div>
+      <div class="bfav ${fav?'on':''}" onclick="event.stopPropagation();toggleWish(${b.id},this)">${heartSVG(fav)}</div>
+    </div>
+    <div class="binfo">
+      <div class="btitle">${b.title}</div>
+      <div class="bauth">${b.author}</div>
+      <div class="bfoot">
+        <div class="bprice">${exch?'Exchange':'$'+b.price.toFixed(2)}</div>
+        <div class="brat">${stars()}${b.rating}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// STORE CARD
+function scard(s){
+  return`<div class="scard" onclick="openStore(${s.id})">
+    <div class="sbanner" style="background:${s.banner}">
+      <div class="slogo" style="background:${s.col}">${s.ico}</div>
+      <div class="sverif"><svg width="10" height="10"><use href="#s-check"/></svg>Verified</div>
+    </div>
+    <div class="sbody">
+      <div class="sname">${s.name}</div>
+      <div class="smeta">${s.city} · Official Bookstore</div>
+      <div class="sstats">
+        <div class="sstat"><strong>${s.books}</strong>Books</div>
+        <div class="sstat"><strong>${s.rating}★</strong>Rating</div>
+        <div class="sstat"><strong>${s.reviews}</strong>Reviews</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// RENDERS
+function renderHome(){
+  $('home-books').innerHTML=BOOKS.slice(0,8).map(b=>bcard(b,`openBook(${b.id})`)).join('');
+  $('home-stores').innerHTML=STORES.slice(0,2).map(s=>scard(s)).join('');
+}
+
+function renderMk(){
+  let f=BOOKS.filter(b=>{
+    const q=mkQ.toLowerCase();
+    const ms=!q||b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||b.cat.toLowerCase().includes(q);
+    let mf=true;
+    if(mkFilter==='buy')mf=b.type==='buy';
+    else if(mkFilter==='exchange')mf=b.type==='exchange';
+    else if(mkFilter==='new')mf=b.cond==='New';
+    else if(mkFilter==='used')mf=b.cond!=='New';
+    else if(mkFilter==='u10')mf=b.price<10;
+    else if(mkFilter==='fiction')mf=b.cat==='Fiction';
+    else if(mkFilter==='tech')mf=b.cat==='Technology';
+    else if(mkFilter==='business')mf=b.cat==='Business';
+    return ms&&mf;
+  });
+  if(mkSort==='price')f=[...f].sort((a,b)=>a.price-b.price);
+  else if(mkSort==='price-desc')f=[...f].sort((a,b)=>b.price-a.price);
+  else if(mkSort==='rating')f=[...f].sort((a,b)=>b.rating-a.rating);
+  $('mk-count').textContent=`Showing ${f.length} book${f.length!==1?'s':''}`;
+  $('mk-books').innerHTML=f.length?f.map(b=>bcard(b,`openBook(${b.id})`)).join(''):'<div class="empty" style="grid-column:1/-1"><svg><use href="#s-book"/></svg><div class="empty-title">No books found</div><div class="empty-sub">Try a different search or filter</div></div>';
+}
+function setSort(s){
+  if(s==='price'){
+    if(mkSort==='price'){mkSort='price-desc';$('sort-price').textContent='Price ↓';}
+    else{mkSort='price';$('sort-price').textContent='Price ↑';}
+    $('sort-price').style.background='var(--ink)';$('sort-price').style.color='white';
+    $('sort-rating').style.background='var(--white)';$('sort-rating').style.color='';
+  } else {
+    mkSort='rating';
+    $('sort-rating').style.background='var(--ink)';$('sort-rating').style.color='white';
+    $('sort-price').style.background='var(--white)';$('sort-price').style.color='';$('sort-price').textContent='Price ↑';
+  }
+  renderMk();
+}
+
+function renderStores(){
+  $('all-stores').innerHTML=STORES.map(s=>scard(s)).join('');
+  $('store-new-books').innerHTML=BOOKS.filter(b=>b.verified).slice(0,6).map(b=>bcard(b,`openBook(${b.id})`)).join('');
+}
+
+function renderCart(){
+  if(!cart.length){
+    $('cart-items').innerHTML='<div class="empty"><svg><use href="#s-cart"/></svg><div class="empty-title">Your cart is empty</div><div class="empty-sub">Explore the marketplace and add books you love</div><button class="btn btnP" style="margin-top:14px" onclick="go(\'marketplace\')">Browse Books</button></div>';
+    $('cart-sub').textContent='$0.00';$('cart-tot').textContent='$0.00';return;
+  }
+  $('cart-items').innerHTML=cart.map((ci,i)=>`<div class="citem">
+    <div class="citem-cov" style="background:${ci.b.bg};display:flex;align-items:center;justify-content:center">
+      <div style="font-size:9px;font-weight:700;text-align:center;padding:4px;color:${ci.b.col};line-height:1.3">${ci.b.title}</div>
+    </div>
+    <div class="citem-info">
+      <div class="citem-title">${ci.b.title}</div>
+      <div class="citem-auth">${ci.b.author}</div>
+      <div class="citem-price">$${ci.b.price.toFixed(2)}</div>
+      <div class="qbts">
+        <div class="qbtn" onclick="chQty(${i},-1)">−</div>
+        <span style="font-weight:600;font-size:13px;min-width:16px;text-align:center">${ci.q}</span>
+        <div class="qbtn" onclick="chQty(${i},1)">+</div>
+        <div onclick="rmCart(${i})" style="margin-left:auto;color:var(--rust);cursor:pointer;font-size:11px;font-weight:500">Remove</div>
+      </div>
+    </div>
+  </div>`).join('');
+  const sub=cart.reduce((a,ci)=>a+ci.b.price*ci.q,0);
+  $('cart-sub').textContent='$'+sub.toFixed(2);
+  $('cart-tot').textContent='$'+(Math.max(0,sub-3)).toFixed(2);
+}
+
+function renderWishlist(){
+  const wb=BOOKS.filter(b=>wishlist.includes(b.id));
+  $('wish-books').innerHTML=wb.length?wb.map(b=>bcard(b,`openBook(${b.id})`)).join(''):'<div class="empty"><svg><use href="#s-heart"/></svg><div class="empty-title">No saved books yet</div><div class="empty-sub">Tap the heart icon on any book to save it here</div><button class="btn btnP" style="margin-top:14px" onclick="go(\'marketplace\')">Explore Books</button></div>';
+}
+
+function renderSearch(){
+  const cats=[['Fiction','#B84C2A','#FAEAE4'],['Technology','#1A3A6B','#E6F0FB'],['Business','#2D5A3D','#E8F4EC'],['Self-Help','#4A3A8A','#EEECFA'],['Science','#C8820A','#FDF3DE'],['History','#B84C2A','#FAEAE4']];
+  $('srch-cats').innerHTML=cats.map(([n,col,bg])=>`<div onclick="setSearch('${n}')" style="background:${bg};border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .2s" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">\
+    <div style="font-weight:600;font-size:13px;color:${col}">${n}</div>\
+  </div>`).join('');
+}
+
+function renderProfile(){
+  $('prof-books').innerHTML=BOOKS.slice(0,6).map(b=>bcard(b,`openBook(${b.id})`)).join('');
+  $('prof-orders').innerHTML=ORDERS.map(o=>`<div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="ostatus ${o.sc}">${o.status}</div>
+      <div style="font-size:11px;color:var(--stone)">${o.date}</div>
+    </div>
+    <div style="font-weight:600;font-size:13px">${o.title}</div>
+    <div style="font-size:11px;color:var(--stone);margin:2px 0 7px">${o.author}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-weight:700;color:var(--amber)">${o.price}</div>
+      <button class="btn btnO btnSm" onclick="showToast('📦 Tracking opened')">Track</button>
+    </div>
+  </div>`).join('');
+  $('prof-reviews').innerHTML=`<div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px">SR</div>
+      <div><div style="font-weight:600;font-size:13px">Sara Ramos</div><div style="display:flex;gap:2px">${stars().repeat(5)}</div></div>
+      <div style="margin-left:auto;font-size:11px;color:var(--stone)">May 10</div>
+    </div>
+    <div style="font-size:12.5px;color:var(--stone);line-height:1.65">Book in perfect condition, exactly as described. Fast shipping — would buy again!</div>
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px">MK</div>
+      <div><div style="font-weight:600;font-size:13px">Marcus Kofi</div><div style="display:flex;gap:2px">${stars().repeat(5)}</div></div>
+      <div style="margin-left:auto;font-size:11px;color:var(--stone)">May 8</div>
+    </div>
+    <div style="font-size:12.5px;color:var(--stone);line-height:1.65">Honest seller, great communication. Would buy from again.</div>
+  </div>`;
+}
+
+function renderNotifs(){
+  $('notif-list').innerHTML=NOTIFS.map(n=>`<div class="nitem ${n.unread?'unread':''}">
+    <div class="nicon" style="background:${n.bg}"><svg style="stroke:${n.sc}"><use href="#${n.ico}"/></svg></div>
+    <div class="ntxt"><div class="ntitle">${n.title}</div><div class="ntime">${n.time}</div></div>
+    ${n.unread?'<div class="ndot"></div>':''}
+  </div>`).join('');
+}
+
+function renderChats(){
+  $('chat-threads').innerHTML=CHATS.map((c,i)=>`<div class="cthread ${i===activeChat?'on':''}" onclick="selChat(${i})">
+    <div class="cav" style="background:${c.col}">${c.ini}</div>
+    <div class="cprev"><div class="cname">${c.name}</div><div class="clast">${c.prev}</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+      <div class="ctime">${c.time}</div>
+      ${c.unread?'<div class="cunread"></div>':''}
+    </div>
+  </div>`).join('');
+  renderMsgs();
+}
+
+function renderMsgs(){
+  const c=CHATS[activeChat];
+  $('msgs-hdr').innerHTML=`<div class="cav" style="background:${c.col};width:38px;height:38px;font-size:13px">${c.ini}</div>
+    <div><div style="font-weight:600;font-size:13px">${c.name}</div><div style="font-size:10.5px;color:var(--sage);font-weight:500">● Online</div></div>
+    <div style="margin-left:auto;display:flex;gap:7px">
+      <div class="niBtn" onclick="showToast('📞 Calling...')"><svg><use href="#s-chat"/></svg></div>
+    </div>`;
+  const area=$('msgs-area');
+  area.innerHTML=c.msgs.map(m=>`<div>
+    <div class="msg ${m.out?'msg-out':'msg-in'}">${m.txt}</div>
+    <div class="mtime" style="${m.out?'text-align:right':''}">${m.t}</div>
+  </div>`).join('');
+  area.scrollTop=area.scrollHeight;
+}
+
+function renderDash(){
+  // Chart
+  const months=['Nov','Dec','Jan','Feb','Mar','Apr','May'];
+  const vals=[8200,9400,7100,11200,10800,12400,14700];
+  const max=Math.max(...vals);
+  $('dash-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center">
+    <div class="cbar" style="height:${Math.round(v/max*90)}px;background:${i===6?'var(--amber)':'var(--amber-l)'};border:${i===6?'':'none'}" title="$${(v/1000).toFixed(1)}k">
+      <div class="cbar-val">$${(v/1000).toFixed(1)}k</div>
+    </div>
+  </div>`).join('');
+  $('dash-chart-lbls').innerHTML=months.map(m=>`<div class="cbar-lbl" style="flex:1;text-align:center">${m}</div>`).join('');
+  // Orders
+  $('dash-orders').innerHTML=ORDERS.slice(0,3).map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
+    <div style="width:38px;height:57px;border-radius:6px;flex-shrink:0;background:var(--stone-l);display:flex;align-items:center;justify-content:center">
+      <svg width="16" height="16" fill="none" stroke="var(--stone)" stroke-width="1.8"><use href="#s-book"/></svg>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.title}</div>
+      <div style="font-size:11px;color:var(--stone);margin:1px 0">${o.author}</div>
+      <div class="ostatus ${o.sc}" style="margin-top:4px">${o.status}</div>
+    </div>
+    <div style="font-weight:700;color:var(--amber);font-size:13px;flex-shrink:0">${o.price}</div>
+  </div>`).join('');
+}
+
+function renderStoreDash(){
+  // Inventory
+  $('inv-list').innerHTML=INVENTORY.map(iv=>`<div class="inv-row">
+    <div class="inv-cov" style="background:var(--stone-l);color:var(--stone)">${iv.title.split(' ')[0]}</div>
+    <div class="inv-info">
+      <div class="inv-title">${iv.title}</div>
+      <div class="inv-meta">${iv.sold} sold · Stock: ${iv.stock}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
+      <div class="inv-price">${iv.price}</div>
+      <div class="inv-stock ${iv.sc}">${iv.sc==='in-stock'?'In Stock':iv.sc==='low-stock'?'Low Stock':'Out of Stock'}</div>
+    </div>
+  </div>`).join('');
+  // Store orders
+  $('store-orders-list').innerHTML=ORDERS.map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
+    <div style="flex:1"><div style="font-weight:600;font-size:12.5px">${o.title}</div><div style="font-size:11px;color:var(--stone);margin-top:1px">${o.date}</div></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-weight:700;color:var(--amber);font-size:13px">${o.price}</div>
+      <div class="ostatus ${o.sc}">${o.status}</div>
+    </div>
+  </div>`).join('');
+  // Store chart
+  const svals=[12400,15600,11200,18900,17400,21200,24780];
+  const sm=['Nov','Dec','Jan','Feb','Mar','Apr','May'];
+  const smax=Math.max(...svals);
+  $('store-chart').innerHTML=svals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center">
+    <div class="cbar" style="height:${Math.round(v/smax*90)}px;background:${i===6?'var(--blue)':'var(--blue-l)'}">
+      <div class="cbar-val" style="color:var(--blue)">$${(v/1000).toFixed(1)}k</div>
+    </div>
+  </div>`).join('');
+  $('store-chart-lbls').innerHTML=sm.map(m=>`<div class="cbar-lbl" style="flex:1;text-align:center">${m}</div>`).join('');
+}
+
+// BOOK DETAIL
+function openBook(id){
+  const b=BOOKS.find(x=>x.id===id);if(!b)return;
+  const fav=wishlist.includes(b.id);
+  $('bd-content').innerHTML=`<div style="padding:0 20px 24px">
+    <div class="bd-cov" style="background:${b.bg}">
+      <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:8px;background:rgba(0,0,0,0.2);z-index:1"></div>
+        <div style="position:absolute;left:8px;top:0;bottom:0;width:4px;background:rgba(255,255,255,0.1);z-index:1"></div>
+        <div style="font-family:var(--fd);font-size:15px;font-weight:700;text-align:center;line-height:1.3;color:${b.col};z-index:2;position:relative">${b.title}</div>
+        <div style="font-size:11px;margin-top:8px;color:${b.col};opacity:.7;z-index:2;position:relative">${b.author}</div>
+      </div>
+    </div>
+    <div style="margin-top:22px">
+      <div style="display:flex;align-items:start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-family:var(--fd);font-size:20px;font-weight:700;line-height:1.2">${b.title}</div>
+          <div style="font-size:14px;color:var(--stone);margin-top:3px">${b.author}</div>
+        </div>
+        <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--amber);white-space:nowrap">${b.type==='exchange'?'Exchange':'$'+b.price.toFixed(2)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:11px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:3px;font-weight:600;font-size:13px;color:var(--amber)">${stars()} ${b.rating}</div>
+        <div style="font-size:11.5px;color:var(--stone)">(${b.reviews.toLocaleString()} reviews)</div>
+        <div style="background:var(--stone-l);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:500">${b.cond}</div>
+        <div style="background:var(--amber-l);color:var(--amber);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600">${b.cat}</div>
+      </div>
+      <div style="margin-top:14px;font-size:13px;color:var(--stone);line-height:1.7">${b.desc}</div>
+      <!-- Seller -->
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;padding:12px;background:var(--stone-l);border-radius:var(--rl)">
+        <div style="width:38px;height:38px;border-radius:50%;background:${b.verified?'var(--sage)':'var(--amber)'};display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;flex-shrink:0">${b.seller[0]}</div>
+        <div>
+          <div style="font-weight:600;font-size:13px">${b.seller}</div>
+          <div style="font-size:11px;color:${b.verified?'var(--sage)':'var(--stone)'};display:flex;align-items:center;gap:3px">
+            ${b.verified?'<svg width="11" height="11" fill="none" stroke="var(--sage)" stroke-width="2.5"><use href="#s-check"/></svg> Verified Bookstore':'Community Seller'}
+          </div>
+        </div>
+        <button class="btn btnO btnSm" style="margin-left:auto" onclick="go('messages')">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-chat"/></svg>Chat
+        </button>
+      </div>
+      <!-- Actions -->
+      <div class="bd-acts">
+        <button class="btn btnP" onclick="addToCart(${b.id})">
+          <svg width="15" height="15" fill="none" stroke="white" stroke-width="2"><use href="#s-cart"/></svg>Add to Cart
+        </button>
+        <button class="btn btnO" onclick="toggleWishDetail(${b.id},this)" id="bd-wish">
+          <svg width="15" height="15" fill="${fav?'var(--rust)':'none'}" stroke="${fav?'var(--rust)':'currentColor'}" stroke-width="2"><use href="#s-heart"/></svg>
+          ${fav?'Saved':'Save'}
+        </button>
+        ${b.type==='exchange'?'<button class="btn" style="flex:1;justify-content:center;background:var(--sage-l);color:var(--sage);font-weight:600" onclick="showToast(\'🔄 Exchange request sent!\')"><svg width="15" height="15" fill="none" stroke="var(--sage)" stroke-width="2"><use href="#s-exchange"/></svg>Request Exchange</button>':''}
+      </div>
+      <!-- Related -->
+      <div style="margin-top:20px">
+        <div style="font-weight:700;font-size:16px;font-family:var(--fd);margin-bottom:12px">You May Also Like</div>
+      </div>
+    </div>
+    <div class="rec-scroll" style="margin-top:-4px">
+      ${BOOKS.filter(x=>x.id!==b.id&&x.cat===b.cat).slice(0,4).map(rb=>`<div class="rec-card" onclick="openBook(${rb.id})">
+        <div class="rec-cov" style="background:${rb.bg};aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;padding:10px;position:relative">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:5px;background:rgba(0,0,0,0.18)"></div>
+          <div style="font-family:var(--fd);font-size:10px;font-weight:700;text-align:center;color:${rb.col};line-height:1.3">${rb.title}</div>
+        </div>
+        <div class="rec-info"><div style="font-size:11px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${rb.title}</div><div style="font-size:10px;color:var(--amber);font-weight:700">$${rb.price.toFixed(2)}</div></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  prevPage=curPage;showPg('book-detail');
+}
+
+// STORE DETAIL
+function openStore(id){
+  const s=STORES.find(x=>x.id===id);if(!s)return;
+  $('sd-content').innerHTML=`<div>
+    <div style="padding:14px 20px">
+      <button onclick="goBack()" style="display:flex;align-items:center;gap:5px;color:var(--stone);font-size:13px">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-back"/></svg>Back
+      </button>
+    </div>
+    <div class="stbanner" style="background:${s.banner}">
+      <div class="stlogo" style="background:${s.col}">${s.ico}</div>
+    </div>
+    <div class="stbody">
+      <div style="display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:11px;margin-bottom:11px">
+        <div>
+          <div style="font-family:var(--fd);font-size:20px;font-weight:700">${s.name}</div>
+          <div style="font-size:12px;color:var(--stone);margin:3px 0 7px;display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-map"/></svg>${s.city}
+          </div>
+          <div class="verif-badge"><svg><use href="#s-check"/></svg>Verified Bookstore</div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btnO btnSm" onclick="go('messages')"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-chat"/></svg>Chat</button>
+          <button class="btn btnP btnSm" onclick="showToast('✓ Following ${s.name}!')">Follow</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--stone);line-height:1.7;margin-bottom:16px">${s.desc}</div>
+      <div style="display:flex;gap:0;background:var(--stone-l);border-radius:var(--rl);overflow:hidden;margin-bottom:20px">
+        ${[['📚',s.books,'Books'],['⭐',s.rating+'★','Rating'],['📝',s.reviews,'Reviews']].map(([ic,v,l])=>`<div style="flex:1;text-align:center;padding:14px;border-right:1px solid var(--border)"><div style="font-size:16px;margin-bottom:3px">${ic}</div><div style="font-family:var(--fd);font-size:17px;font-weight:700">${v}</div><div style="font-size:10px;color:var(--stone);margin-top:1px">${l}</div></div>`).join('')}
+      </div>
+      <div style="font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:12px">Books in Store</div>
+      <div class="bgrid">${BOOKS.filter(b=>b.verified).slice(0,8).map(b=>bcard(b,`openBook(${b.id})`)).join('')}</div>
+    </div>
+  </div>`;
+  prevPage=curPage;showPg('store-detail');
+}
+
+// ACTIONS
+function addToCart(id){
+  const b=BOOKS.find(x=>x.id===id);if(!b)return;
+  const ex=cart.find(ci=>ci.b.id===id);
+  if(ex)ex.q++;else cart.push({b,q:1});
+  updCartBadge();showToast('Added to cart!');
+}
+function chQty(i,d){cart[i].q=Math.max(1,cart[i].q+d);renderCart();}
+function rmCart(i){cart.splice(i,1);renderCart();updCartBadge();}
+function updCartBadge(){const n=cart.reduce((a,ci)=>a+ci.q,0);$('cbadge').textContent=n;}
+function toggleWish(id,el){
+  if(wishlist.includes(id)){wishlist=wishlist.filter(x=>x!==id);el.innerHTML=heartSVG(false);el.classList.remove('on');showToast('Removed from wishlist');}
+  else{wishlist.push(id);el.innerHTML=heartSVG(true);el.classList.add('on');showToast('Saved to wishlist!');}
+  updWishBadge();
+}
+function toggleWishDetail(id,btn){
+  if(wishlist.includes(id)){wishlist=wishlist.filter(x=>x!==id);btn.innerHTML=`<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><use href="#s-heart"/></svg> Save`;showToast('Removed from wishlist');}
+  else{wishlist.push(id);btn.innerHTML=`<svg width="15" height="15" fill="var(--rust)" stroke="var(--rust)" stroke-width="2"><use href="#s-heart"/></svg> Saved`;showToast('Saved to wishlist!');}
+  updWishBadge();
+}
+function selChat(i){activeChat=i;CHATS[i].unread=false;renderChats();}
+function sendMsg(e){if(e.key==='Enter')sendMsgClick();}
+function sendMsgClick(){
+  const inp=$('m-input');const txt=inp.value.trim();if(!txt)return;
+  CHATS[activeChat].msgs.push({out:true,txt,t:'Now'});CHATS[activeChat].prev=txt;inp.value='';
+  renderMsgs();renderChats();
+  setTimeout(()=>{const r=['That sounds great!','Let me check.','Sure, I can do that!','Thanks for your message!','Give me a moment.'];CHATS[activeChat].msgs.push({out:false,txt:r[Math.floor(Math.random()*r.length)],t:'Now'});renderMsgs();},1100);
+}
+function placeOrder(){
+  go('home');cart=[];updCartBadge();
+  showToast('🎉 Order placed! Confirmation sent.');
+}
+function selPay(el){document.querySelectorAll('.pay-opt').forEach(e=>e.classList.remove('on'));el.classList.add('on');}
+
+// NAV
+function go(name){prevPage=curPage;showPg(name);}
+function showPg(name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  const el=$('pg-'+name);if(el)el.classList.add('on');
+  curPage=name;
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const bn=$('bn-'+name);if(bn)bn.classList.add('on');
+  document.querySelectorAll('.ntab').forEach((t,i)=>{t.classList.remove('on');if((name==='home'&&i===0)||(name==='marketplace'&&i===1)||(name==='stores'&&i===2)||(name==='dashboard'&&i===3))t.classList.add('on');});
+  window.scrollTo(0,0);
+  if(name==='home')renderHome();
+  if(name==='marketplace')renderMk();
+  if(name==='stores')renderStores();
+  if(name==='cart')renderCart();
+  if(name==='wishlist')renderWishlist();
+  if(name==='profile')renderProfile();
+  if(name==='notifications')renderNotifs();
+  if(name==='messages')renderChats();
+  if(name==='dashboard')renderDash();
+  if(name==='store-dash')renderStoreDash();
+  if(name==='search')renderSearch();
+}
+function goBack(){go(prevPage||'home');}
+function setMkF(el,f){document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));el.classList.add('on');mkFilter=f;renderMk();}
+function filterMk(){mkQ=$('mk-q').value;renderMk();}
+function setCat(el){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function doSearch(){
+  const q=$('srch-q').value.toLowerCase();
+  const res=BOOKS.filter(b=>b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||b.cat.toLowerCase().includes(q));
+  if(!q){renderSearch();return;}
+  $('srch-results').innerHTML=`<div style="font-size:12px;color:var(--stone);margin-bottom:11px;font-weight:500">${res.length} results for "<strong>${q}</strong>"</div><div class="bgrid">${res.map(b=>bcard(b,`openBook(${b.id})`)).join('')}</div>`;
+}
+function setSearch(q){$('srch-q').value=q;doSearch();}
+function authTab(t){
+  $('auth-signin').style.display=t==='in'?'block':'none';
+  $('auth-reg').style.display=t==='reg'?'block':'none';
+  $('at-signin').style.cssText=t==='in'?'flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;background:white;box-shadow:var(--sh);color:var(--ink)':'flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--stone)';
+  $('at-reg').style.cssText=t==='reg'?'flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;background:white;box-shadow:var(--sh);color:var(--ink)':'flex:1;text-align:center;padding:7px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--stone)';
+}
+function selAtype(el){document.querySelectorAll('.atype').forEach(a=>a.classList.remove('on'));el.classList.add('on');}
+function ptab(el,t){document.querySelectorAll('.ptab').forEach(p=>p.classList.remove('on'));el.classList.add('on');['listings','orders','reviews'].forEach(x=>{const e=$('pt-'+x);if(e)e.style.display=x===t?'block':'none';});}
+function storeTab(el,t){document.querySelectorAll('.ptab').forEach(p=>p.classList.remove('on'));el.classList.add('on');['inventory','orders','analytics','promotions'].forEach(x=>{const e=$('st-'+x);if(e)e.style.display=x===t?'block':'none';});}
+// MODAL
+function openModal(id){$(id).classList.add('on');}
+function closeModal(id){$(id).classList.remove('on');}
+$('list-modal').addEventListener('click',function(e){if(e.target===this)closeModal('list-modal');});
+// TOAST
+function showToast(msg){
+  const t=$('toast');$('toast-txt').textContent=msg;
+  t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);
+}
+// DARK MODE
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  $('dark-toggle').classList.toggle('on');
+  localStorage.setItem('bookit-dark', document.body.classList.contains('dark'));
+}
+if(localStorage.getItem('bookit-dark')==='true'){document.body.classList.add('dark');if($('dark-toggle'))$('dark-toggle').classList.add('on');}
+
+// SCROLL TO TOP
+window.addEventListener('scroll',()=>{
+  const btn=$('scroll-top');
+  if(btn)btn.classList.toggle('show',window.scrollY>300);
+});
+
+// WISHLIST BADGE
+function updWishBadge(){
+  let el=$('wl-badge');
+  if(!el){
+    const bni=document.querySelector('[id="bn-wishlist"]');
+    if(bni){el=document.createElement('div');el.id='wl-badge';el.className='bni-badge';bni.appendChild(el);}
+  }
+  if(el)el.textContent=wishlist.length;
+}
+
+// INIT
+renderHome();updCartBadge();updWishBadge();
+// Store detail shortcut
+window.openStoreById=id=>openStore(id);
+</script>
+</body>
+</html>
