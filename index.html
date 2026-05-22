@@ -1714,6 +1714,8 @@ async function doSocialSignIn(provider){
   });
   if(error){showToast('❌ '+error.message);}
 }
+
+async function doSignOut(){
   await sb.auth.signOut();
   currentUser = null;
   showToast('👋 Signed out');
