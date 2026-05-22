@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bookit</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1042,7 +1043,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
         <div class="aor">or continue with email</div>
         <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
         <div class="fld"><label>Password</label><input type="password" placeholder="••••••••"></div>
-        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="go('dashboard');showToast('👋 Welcome back!')">Sign In</button>
+        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="doSignIn()">Sign In</button>
         <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--stone)">Forgot password? <span style="color:var(--amber);cursor:pointer">Reset</span></div>
       </div>
       <div id="auth-reg" style="display:none">
@@ -1067,7 +1068,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
         <div class="fld"><label>Full Name</label><input placeholder="Ahmed Jalali"></div>
         <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
         <div class="fld"><label>Password</label><input type="password" placeholder="Create password"></div>
-        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="go('dashboard');showToast('🎉 Account created!')">Create Account</button>
+        <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="doSignUp()">Create Account</button>
       </div>
     </div>
   </div>
@@ -1112,7 +1113,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
       <div class="srow" onclick="go('store-dash')"><div class="srl"><div class="sicon" style="background:var(--blue-l)"><svg style="stroke:var(--blue)"><use href="#s-store"/></svg></div><div><div class="stitle">Bookstore Dashboard</div><div class="ssub">Manage your store</div></div></div><svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg></div>
     </div>
     <div class="ssec">
-      <div class="srow" onclick="go('auth')"><div class="srl"><div class="sicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-logout"/></svg></div><div><div class="stitle" style="color:var(--rust)">Log Out</div></div></div></div>
+      <div class="srow" onclick="doSignOut()"><div class="srl"><div class="sicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-logout"/></svg></div><div><div class="stitle" style="color:var(--rust)">Log Out</div></div></div></div>
     </div>
   </div>
   <div style="height:20px"></div>
@@ -1156,7 +1157,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
     </div>
     <div style="display:flex;gap:9px">
       <button class="btn btnO" style="flex:1;justify-content:center" onclick="closeModal('list-modal')">Cancel</button>
-      <button class="btn btnP" style="flex:1;justify-content:center" onclick="closeModal('list-modal');showToast('📚 Book listed successfully!')">Publish Listing</button>
+      <button class="btn btnP" style="flex:1;justify-content:center" onclick="publishListing()">Publish Listing</button>
     </div>
   </div>
 </div>
@@ -1173,7 +1174,28 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
 </div>
 
 <script>
-// ===== DATA =====
+// ===== SUPABASE =====
+const SUPABASE_URL = 'https://rajrpnjvwiuoqbyvakaf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanJwbmp2d2l1b3FieXZha2FmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0Mzg3NjAsImV4cCI6MjA5NTAxNDc2MH0.bJD5CIDIHzVRO3-3r9K-WmLdo7ckOMR3FOCIOHM4NUw';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Current user state
+let currentUser = null;
+
+// Auth state listener
+sb.auth.onAuthStateChange((event, session) => {
+  currentUser = session?.user ?? null;
+  if (currentUser) {
+    // Update UI with user info
+    const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    document.querySelectorAll('.av').forEach(el => el.textContent = initials);
+    document.querySelectorAll('.pname').forEach(el => el.textContent = name);
+    document.querySelectorAll('.pav').forEach(el => el.textContent = initials);
+  }
+});
+
+// ===== DATA (fallback) =====
 const BOOKS=[
   {id:1,title:'Atomic Habits',author:'James Clear',price:14.99,rating:4.9,cat:'Self-Help',cond:'New',col:'#C8820A',bg:'#FDF3DE',type:'buy',seller:'BookNest',verified:true,desc:'An Easy & Proven Way to Build Good Habits & Break Bad Ones. Transform your life with tiny changes.',reviews:1420},
   {id:2,title:'Sapiens',author:'Yuval Harari',price:11.99,rating:4.8,cat:'History',cond:'Like New',col:'#2D5A3D',bg:'#E8F4EC',type:'buy',seller:'ahmed_reads',verified:false,desc:'A Brief History of Humankind. Harari\'s thrilling narrative of humanity\'s creation and evolution.',reviews:982},
@@ -1686,7 +1708,154 @@ function showToast(msg){
   const t=$('toast');$('toast-txt').textContent=msg;
   t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);
 }
-// DARK MODE
+// ===== SUPABASE AUTH FUNCTIONS =====
+async function doSignIn(){
+  const email = document.querySelector('#auth-signin input[type="email"]').value.trim();
+  const password = document.querySelector('#auth-signin input[type="password"]').value;
+  if(!email||!password){showToast('❌ Enter email and password');return;}
+  showToast('⏳ Signing in...');
+  const {error} = await sb.auth.signInWithPassword({email, password});
+  if(error){showToast('❌ '+error.message);return;}
+  showToast('👋 Welcome back!');
+  go('dashboard');
+}
+
+async function doSignUp(){
+  const name = document.querySelector('#auth-reg input[placeholder="Ahmed Jalali"]').value.trim();
+  const email = document.querySelector('#auth-reg input[type="email"]').value.trim();
+  const password = document.querySelector('#auth-reg input[type="password"]').value;
+  if(!name||!email||!password){showToast('❌ Fill all fields');return;}
+  if(password.length<6){showToast('❌ Password must be 6+ chars');return;}
+  showToast('⏳ Creating account...');
+  const {error} = await sb.auth.signUp({email, password, options:{data:{full_name:name}}});
+  if(error){showToast('❌ '+error.message);return;}
+  showToast('🎉 Account created! Check your email.');
+  go('dashboard');
+}
+
+async function doSignOut(){
+  await sb.auth.signOut();
+  currentUser = null;
+  showToast('👋 Signed out');
+  go('auth');
+}
+
+// ===== SUPABASE DB FUNCTIONS =====
+async function loadBooks(filter={}, sortBy='created_at'){
+  try {
+    let q = sb.from('books').select('*');
+    if(filter.type) q = q.eq('type', filter.type);
+    if(filter.cond) q = q.eq('condition', filter.cond);
+    if(filter.maxPrice) q = q.lte('price', filter.maxPrice);
+    if(filter.cat) q = q.eq('category', filter.cat);
+    if(filter.search) q = q.or(`title.ilike.%${filter.search}%,author.ilike.%${filter.search}%,category.ilike.%${filter.search}%`);
+    if(sortBy==='price') q = q.order('price',{ascending:true});
+    else if(sortBy==='price-desc') q = q.order('price',{ascending:false});
+    else if(sortBy==='rating') q = q.order('rating',{ascending:false});
+    else q = q.order('created_at',{ascending:false});
+    const {data, error} = await q;
+    if(error) throw error;
+    return data || [];
+  } catch(e){ console.error(e); return BOOKS; } // fallback to local
+}
+
+async function renderMkSupabase(){
+  $('mk-books').innerHTML='<div style="text-align:center;padding:40px;color:var(--stone)">Loading...</div>';
+  const filter={};
+  if(mkFilter==='buy') filter.type='buy';
+  else if(mkFilter==='exchange') filter.type='exchange';
+  else if(mkFilter==='new') filter.cond='New';
+  else if(mkFilter==='used') filter.cond='Used';
+  else if(mkFilter==='u10') filter.maxPrice=10;
+  else if(mkFilter==='fiction') filter.cat='Fiction';
+  else if(mkFilter==='tech') filter.cat='Technology';
+  else if(mkFilter==='business') filter.cat='Business';
+  if(mkQ) filter.search=mkQ;
+  const books = await loadBooks(filter, mkSort==='default'?'created_at':mkSort);
+  $('mk-count').textContent=`Showing ${books.length} book${books.length!==1?'s':''}`;
+  $('mk-books').innerHTML=books.length
+    ? books.map(b=>bcard(b,`openBook(${b.id})`)).join('')
+    : '<div class="empty" style="grid-column:1/-1"><svg><use href="#s-book"/></svg><div class="empty-title">No books found</div><div class="empty-sub">Try a different search or filter</div></div>';
+}
+
+async function addToCartDB(bookId){
+  if(!currentUser){showToast('Please sign in first');go('auth');return;}
+  const ex = await sb.from('cart').select('*').eq('user_id',currentUser.id).eq('book_id',bookId).single();
+  if(ex.data){
+    await sb.from('cart').update({quantity: ex.data.quantity+1}).eq('id',ex.data.id);
+  } else {
+    await sb.from('cart').insert({user_id:currentUser.id, book_id:bookId, quantity:1});
+  }
+  addToCart(bookId); // also update local state for immediate UI feedback
+}
+
+async function toggleWishDB(bookId, el){
+  if(!currentUser){showToast('Please sign in first');go('auth');return;}
+  const ex = await sb.from('wishlist').select('*').eq('user_id',currentUser.id).eq('book_id',bookId).single();
+  if(ex.data){
+    await sb.from('wishlist').delete().eq('id',ex.data.id);
+  } else {
+    await sb.from('wishlist').insert({user_id:currentUser.id, book_id:bookId});
+  }
+  toggleWish(bookId, el); // update local UI
+}
+
+async function listBook(formData){
+  if(!currentUser){showToast('Please sign in first');go('auth');return;}
+  const {error} = await sb.from('books').insert({
+    title: formData.title,
+    author: formData.author,
+    price: parseFloat(formData.price)||0,
+    condition: formData.condition,
+    category: formData.category,
+    type: formData.type,
+    description: formData.description,
+    seller_id: currentUser.id,
+    seller_name: currentUser.user_metadata?.full_name || currentUser.email,
+  });
+  if(error){showToast('❌ '+error.message);return;}
+  closeModal('list-modal');
+  showToast('📚 Book listed successfully!');
+}
+
+async function publishListing(){
+  const modal = $('list-modal');
+  const inputs = modal.querySelectorAll('input,select,textarea');
+  listBook({
+    title: inputs[0]?.value,
+    author: inputs[1]?.value,
+    price: inputs[2]?.value,
+    condition: inputs[3]?.value,
+    category: inputs[4]?.value,
+    type: inputs[5]?.value,
+    description: inputs[6]?.value,
+  });
+}
+
+async function placeOrderDB(){
+  if(!currentUser){showToast('Please sign in first');go('auth');return;}
+  const total = cart.reduce((a,ci)=>a+ci.b.price*ci.q,0);
+  const {error} = await sb.from('orders').insert({
+    user_id: currentUser.id,
+    total: Math.max(0,total-3),
+    status: 'pending',
+    items: cart.map(ci=>({book_id:ci.b.id, title:ci.b.title, qty:ci.q, price:ci.b.price}))
+  });
+  if(error){showToast('❌ '+error.message);return;}
+  // Clear cart in DB
+  if(currentUser) await sb.from('cart').delete().eq('user_id',currentUser.id);
+  go('home'); cart=[]; updCartBadge();
+  showToast('🎉 Order placed! Confirmation sent.');
+}
+
+// Check session on load
+async function initApp(){
+  const {data:{session}} = await sb.auth.getSession();
+  currentUser = session?.user ?? null;
+  renderHome(); updCartBadge(); updWishBadge();
+}
+
+// ===== DARK MODE =====
 function toggleDark(){
   document.body.classList.toggle('dark');
   $('dark-toggle').classList.toggle('on');
@@ -1710,8 +1879,17 @@ function updWishBadge(){
   if(el)el.textContent=wishlist.length;
 }
 
+// Override renderMk to use Supabase when available
+const _renderMkLocal = renderMk;
+function renderMk(){
+  renderMkSupabase().catch(()=>_renderMkLocal());
+}
+
+// Override placeOrder to use Supabase
+function placeOrder(){ placeOrderDB(); }
+
 // INIT
-renderHome();updCartBadge();updWishBadge();
+initApp();
 // Store detail shortcut
 window.openStoreById=id=>openStore(id);
 </script>
