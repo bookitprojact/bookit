@@ -475,7 +475,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
       <svg><use href="#s-cart"/></svg>
       <div class="cbadge" id="cbadge">2</div>
     </div>
-    <div class="av" onclick="go('profile')">AJ</div>
+    <div class="av" onclick="go('profile')" id="nav-av">?</div>
   </div>
 </nav>
 
@@ -858,20 +858,14 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
 <!-- ========== PROFILE ========== -->
 <div class="pg" id="pg-profile">
   <div class="phdr">
-    <div class="pav">AJ</div>
-    <div class="pname">Ahmed Jalali</div>
-    <div class="pmeta">@ahmedj · Member since 2024</div>
-    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:5px">
-        <svg width="12" height="12" fill="none" stroke="white" stroke-width="2"><use href="#s-shield"/></svg>
-        Verified Seller
-      </div>
-    </div>
+    <div class="pav" id="prof-av">?</div>
+    <div class="pname" id="prof-name">Guest</div>
+    <div class="pmeta" id="prof-meta">Not signed in</div>
     <div class="pstats">
-      <div class="pstat"><div class="n">47</div><div class="l">Listed</div></div>
-      <div class="pstat"><div class="n">138</div><div class="l">Sold</div></div>
-      <div class="pstat"><div class="n">4.9★</div><div class="l">Rating</div></div>
-      <div class="pstat"><div class="n">89</div><div class="l">Reviews</div></div>
+      <div class="pstat"><div class="n" id="prof-listed">0</div><div class="l">Listed</div></div>
+      <div class="pstat"><div class="n" id="prof-sold">0</div><div class="l">Sold</div></div>
+      <div class="pstat"><div class="n" id="prof-rating">—</div><div class="l">Rating</div></div>
+      <div class="pstat"><div class="n" id="prof-reviews">0</div><div class="l">Reviews</div></div>
     </div>
   </div>
   <div class="pbody">
@@ -895,7 +889,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
 <div class="pg" id="pg-dashboard">
   <div style="padding:18px 20px 8px">
     <div style="font-size:12px;color:var(--stone)">Good morning,</div>
-    <div style="font-family:var(--fd);font-size:20px;font-weight:700">Ahmed's Dashboard</div>
+    <div style="font-family:var(--fd);font-size:20px;font-weight:700" id="dash-greeting">My Dashboard</div>
   </div>
   <!-- Quick Actions -->
   <div style="display:flex;gap:8px;padding:8px 20px 16px;overflow-x:auto;scrollbar-width:none">
@@ -908,23 +902,23 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
   <div class="dgrid">
     <div class="dcard">
       <div class="dcicon" style="background:var(--amber-l)"><svg style="stroke:var(--amber)"><use href="#s-money"/></svg></div>
-      <div class="dcnum">$1,247</div><div class="dclbl">Total Earnings</div>
-      <div class="dctrend tup"><svg width="12" height="12" fill="none" stroke="var(--sage)" stroke-width="2"><use href="#s-trend"/></svg>↑ 18%</div>
+      <div class="dcnum">$0</div><div class="dclbl">Total Earnings</div>
+      <div class="dctrend" style="color:var(--stone)">No sales yet</div>
     </div>
     <div class="dcard">
       <div class="dcicon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-box"/></svg></div>
-      <div class="dcnum">47</div><div class="dclbl">Active Listings</div>
-      <div class="dctrend tup">↑ 5 new</div>
+      <div class="dcnum">0</div><div class="dclbl">Active Listings</div>
+      <div class="dctrend" style="color:var(--stone)">None yet</div>
     </div>
     <div class="dcard">
       <div class="dcicon" style="background:var(--rust-l)"><svg style="stroke:var(--rust)"><use href="#s-bag"/></svg></div>
-      <div class="dcnum">138</div><div class="dclbl">Books Sold</div>
-      <div class="dctrend tup">↑ 12 this week</div>
+      <div class="dcnum">0</div><div class="dclbl">Books Sold</div>
+      <div class="dctrend" style="color:var(--stone)">None yet</div>
     </div>
     <div class="dcard">
       <div class="dcicon" style="background:#FEF9E7"><svg width="20" height="20"><use href="#s-star"/></svg></div>
-      <div class="dcnum">4.9</div><div class="dclbl">Avg Rating</div>
-      <div class="dctrend" style="color:var(--stone)">89 reviews</div>
+      <div class="dcnum">—</div><div class="dclbl">Avg Rating</div>
+      <div class="dctrend" style="color:var(--stone)">No reviews</div>
     </div>
   </div>
   <!-- Chart -->
@@ -960,7 +954,7 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
       <button class="btn btnSm" style="margin-left:auto;background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.2)" onclick="openStore(1)">View Store</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
-      ${[['$24,780','Revenue','↑ 22%'],['342','Books','↑ 18'],['1,240','Orders','↑ 94'],['4.9★','Rating','98% pos']].map(([v,l,t])=>`<div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;text-align:center"><div style="font-family:var(--fd);font-size:17px;color:white;font-weight:700">${v}</div><div style="font-size:10px;color:rgba(255,255,255,0.5);margin:1px 0">${l}</div><div style="font-size:10px;color:#7EDCA0;font-weight:600">${t}</div></div>`).join('')}
+      ${[['$0','Revenue','—'],['0','Books','—'],['0','Orders','—'],['—','Rating','—']].map(([v,l,t])=>`<div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;text-align:center"><div style="font-family:var(--fd);font-size:17px;color:white;font-weight:700">${v}</div><div style="font-size:10px;color:rgba(255,255,255,0.5);margin:1px 0">${l}</div><div style="font-size:10px;color:#7EDCA0;font-weight:600">${t}</div></div>`).join('')}
     </div>
   </div>
   <!-- Store Tabs -->
@@ -1185,77 +1179,44 @@ let currentUser = null;
 // Auth state listener
 sb.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user ?? null;
-  if (currentUser) {
-    // Update UI with user info
-    const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
-    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    document.querySelectorAll('.av').forEach(el => el.textContent = initials);
-    document.querySelectorAll('.pname').forEach(el => el.textContent = name);
-    document.querySelectorAll('.pav').forEach(el => el.textContent = initials);
-  }
+  updateUserUI();
 });
 
-// ===== DATA (fallback) =====
-const BOOKS=[
-  {id:1,title:'Atomic Habits',author:'James Clear',price:14.99,rating:4.9,cat:'Self-Help',cond:'New',col:'#C8820A',bg:'#FDF3DE',type:'buy',seller:'BookNest',verified:true,desc:'An Easy & Proven Way to Build Good Habits & Break Bad Ones. Transform your life with tiny changes.',reviews:1420},
-  {id:2,title:'Sapiens',author:'Yuval Harari',price:11.99,rating:4.8,cat:'History',cond:'Like New',col:'#2D5A3D',bg:'#E8F4EC',type:'buy',seller:'ahmed_reads',verified:false,desc:'A Brief History of Humankind. Harari\'s thrilling narrative of humanity\'s creation and evolution.',reviews:982},
-  {id:3,title:'The Great Gatsby',author:'F. Scott Fitzgerald',price:7.99,rating:4.6,cat:'Fiction',cond:'Good',col:'#B84C2A',bg:'#FAEAE4',type:'exchange',seller:'bookworm22',verified:false,desc:'The story of the mysteriously wealthy Jay Gatsby and his love for Daisy Buchanan.',reviews:654},
-  {id:4,title:'Clean Code',author:'Robert C. Martin',price:28.00,rating:4.7,cat:'Technology',cond:'New',col:'#1A1208',bg:'#F5F2EC',type:'buy',seller:'TechBooks Ltd',verified:true,desc:'A Handbook of Agile Software Craftsmanship. Essential reading for any programmer.',reviews:2103},
-  {id:5,title:'Dune',author:'Frank Herbert',price:9.99,rating:4.9,cat:'Fiction',cond:'Like New',col:'#B8730A',bg:'#FDF3DE',type:'buy',seller:'dune_fan',verified:false,desc:'Set in the distant future, Dune follows Paul Atreides as his family takes control of desert planet Arrakis.',reviews:3201},
-  {id:6,title:'Thinking Fast & Slow',author:'Daniel Kahneman',price:13.50,rating:4.8,cat:'Psychology',cond:'Good',col:'#2D5A3D',bg:'#E8F4EC',type:'buy',seller:'mindbooks',verified:false,desc:'A groundbreaking tour of the mind and how we make choices, by Nobel Prize winner Daniel Kahneman.',reviews:1876},
-  {id:7,title:'The Design of Everyday Things',author:'Don Norman',price:19.99,rating:4.7,cat:'Art & Design',cond:'New',col:'#4A3A8A',bg:'#EEECFA',type:'buy',seller:'DesignHub Store',verified:true,desc:'Why some products satisfy customers while others only frustrate them.',reviews:743},
-  {id:8,title:'Educated',author:'Tara Westover',price:8.99,rating:4.9,cat:'History',cond:'Good',col:'#B84C2A',bg:'#FAEAE4',type:'exchange',seller:'tara_reader',verified:false,desc:'A memoir about a young girl who grows up in a survivalist family in the mountains of Idaho.',reviews:2876},
-  {id:9,title:'Deep Work',author:'Cal Newport',price:12.00,rating:4.7,cat:'Business',cond:'Like New',col:'#1A3A6B',bg:'#E6F0FB',type:'buy',seller:'productivity_books',verified:false,desc:'Rules for Focused Success in a Distracted World.',reviews:1290},
-  {id:10,title:'The Alchemist',author:'Paulo Coelho',price:6.99,rating:4.8,cat:'Fiction',cond:'Good',col:'#6B3D6B',bg:'#F5EEF5',type:'exchange',seller:'coelho_fan',verified:false,desc:'A novel about a young Andalusian shepherd\'s journey to find a worldly treasure.',reviews:4523},
-  {id:11,title:'Zero to One',author:'Peter Thiel',price:15.99,rating:4.6,cat:'Business',cond:'New',col:'#1A1208',bg:'#F5F2EC',type:'buy',seller:'StartupBooks',verified:true,desc:'Notes on Startups, or How to Build the Future.',reviews:987},
-  {id:12,title:'1984',author:'George Orwell',price:5.99,rating:4.9,cat:'Fiction',cond:'Good',col:'#2D1F0A',bg:'#F5F2EC',type:'exchange',seller:'orwell_lover',verified:false,desc:'A dystopian social science fiction novel set in Airstrip One (formerly Great Britain).',reviews:5671},
-  {id:13,title:'Ikigai',author:'Héctor García',price:10.99,rating:4.7,cat:'Self-Help',cond:'New',col:'#B84C2A',bg:'#FAEAE4',type:'buy',seller:'BookNest',verified:true,desc:'The Japanese secret to a long and happy life.',reviews:876},
-  {id:14,title:'A Brief History of Time',author:'Stephen Hawking',price:9.50,rating:4.8,cat:'Science',cond:'Good',col:'#1A3A6B',bg:'#E6F0FB',type:'buy',seller:'scibooks',verified:false,desc:'A landmark volume in science writing by one of the great minds of our time.',reviews:2341},
-];
+function updateUserUI(){
+  if(currentUser){
+    const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const since = new Date(currentUser.created_at).getFullYear();
+    const emailHandle = currentUser.email?.split('@')[0];
+    // Nav avatar
+    if($('nav-av')) $('nav-av').textContent = initials;
+    // Profile page
+    if($('prof-av')) $('prof-av').textContent = initials;
+    if($('prof-name')) $('prof-name').textContent = name;
+    if($('prof-meta')) $('prof-meta').textContent = `@${emailHandle} · Member since ${since}`;
+    // Dashboard greeting
+    if($('dash-greeting')) $('dash-greeting').textContent = `${name.split(' ')[0]}'s Dashboard`;
+  } else {
+    if($('nav-av')) $('nav-av').textContent = '?';
+    if($('prof-av')) $('prof-av').textContent = '?';
+    if($('prof-name')) $('prof-name').textContent = 'Guest';
+    if($('prof-meta')) $('prof-meta').textContent = 'Not signed in';
+    if($('dash-greeting')) $('dash-greeting').textContent = 'My Dashboard';
+  }
+}
 
-const STORES=[
-  {id:1,name:'BookNest',ico:'📚',col:'#C8820A',banner:'linear-gradient(135deg,#120D06,#2A1A0A)',books:342,rating:4.9,city:'London',reviews:1240,desc:'Premium books curated for curious minds. New arrivals every week from around the world.'},
-  {id:2,name:'TechBooks Ltd',ico:'💻',col:'#2D5A3D',banner:'linear-gradient(135deg,#0D2A1A,#2D5A3D)',books:156,rating:4.8,city:'Manchester',reviews:876,desc:'The go-to destination for technology, programming and engineering books.'},
-  {id:3,name:'DesignHub',ico:'🎨',col:'#4A3A8A',banner:'linear-gradient(135deg,#150E40,#4A3A8A)',books:89,rating:4.7,city:'Bristol',reviews:543,desc:'Art, design, architecture and creativity books for visual thinkers.'},
-  {id:4,name:'StartupBooks',ico:'🚀',col:'#B84C2A',banner:'linear-gradient(135deg,#3A1208,#B84C2A)',books:203,rating:4.6,city:'Edinburgh',reviews:678,desc:'Business, entrepreneurship and innovation. Fuel your startup journey.'},
-];
-
-const CHATS=[
-  {id:1,name:'Sara Ramos',ini:'SR',col:'#C8820A',prev:'Is the book still available?',time:'2m',unread:true,msgs:[{out:false,txt:'Hi! Is Atomic Habits still available?',t:'10:32'},{out:true,txt:'Yes! Great condition, barely read.',t:'10:33'},{out:false,txt:'Is the book still available?',t:'10:35'}]},
-  {id:2,name:'BookNest Store',ini:'BN',col:'#2D5A3D',prev:'Your order has been shipped!',time:'1h',unread:true,msgs:[{out:false,txt:'Thank you for your order! Books have been packed.',t:'09:10'},{out:true,txt:'When will it arrive?',t:'09:15'},{out:false,txt:'Your order has been shipped! Expected 2-3 days.',t:'09:20'}]},
-  {id:3,name:'Marcus Kofi',ini:'MK',col:'#4A3A8A',prev:"I'm interested in exchange",time:'3h',unread:false,msgs:[{out:false,txt:"I'd like to exchange Dune for your Sapiens.",t:'07:00'},{out:true,txt:'What condition is your Dune copy?',t:'07:05'},{out:false,txt:"I'm interested in exchange — nearly perfect condition.",t:'07:10'}]},
-  {id:4,name:'Lena Ait',ini:'LA',col:'#B84C2A',prev:'Thanks for the quick delivery!',time:'1d',unread:false,msgs:[{out:false,txt:'Book arrived today. Thanks for the quick delivery!',t:'Yesterday'}]},
-];
-
-const NOTIFS=[
-  {ico:'s-truck',bg:'#FDF3DE',sc:'#C8820A',title:'Your order for "Atomic Habits" has been shipped',time:'2 minutes ago',unread:true},
-  {ico:'s-chat',bg:'#E8F4EC',sc:'#2D5A3D',title:'Sara Ramos sent you a message about your listing',time:'15 minutes ago',unread:true},
-  {ico:'s-star',bg:'#FEF9E7',sc:'#C8820A',title:'New 5-star review on your "Sapiens" listing',time:'1 hour ago',unread:true},
-  {ico:'s-money',bg:'#FAEAE4',sc:'#B84C2A',title:'"Clean Code" sold for $28.00 — payment received',time:'3 hours ago',unread:false},
-  {ico:'s-heart',bg:'#FDF3DE',sc:'#C8820A',title:'12 people wishlisted your books today',time:'5 hours ago',unread:false},
-  {ico:'s-tag',bg:'#E8F4EC',sc:'#2D5A3D',title:'BookNest has a 20% sale on Science books',time:'Yesterday',unread:false},
-  {ico:'s-exchange',bg:'#EEECFA',sc:'#4A3A8A',title:'Marcus Kofi wants to exchange with your listing',time:'2 days ago',unread:false},
-];
-
-const ORDERS=[
-  {title:'Atomic Habits',author:'James Clear',price:'$14.99',status:'In Transit',sc:'os-tra',date:'May 15, 2026'},
-  {title:'Sapiens',author:'Yuval Harari',price:'$11.99',status:'Delivered',sc:'os-del',date:'May 10, 2026'},
-  {title:'Clean Code',author:'Robert C. Martin',price:'$28.00',status:'Processing',sc:'os-pro',date:'May 16, 2026'},
-  {title:'Dune',author:'Frank Herbert',price:'$9.99',status:'Pending',sc:'os-pen',date:'May 17, 2026'},
-];
-
-const INVENTORY=[
-  {title:'Atomic Habits',stock:18,price:'$14.99',sold:142,sc:'in-stock'},
-  {title:'Clean Code',stock:7,price:'$28.00',sold:54,sc:'low-stock'},
-  {title:'Sapiens',stock:0,price:'$11.99',sold:89,sc:'out-stock'},
-  {title:'Zero to One',stock:23,price:'$15.99',sold:37,sc:'in-stock'},
-  {title:'Deep Work',stock:5,price:'$12.00',sold:61,sc:'low-stock'},
-];
+// ===== DATA (empty - loaded from Supabase) =====
+const BOOKS=[];
+const STORES=[];
+const CHATS=[];
+const NOTIFS=[];
+const ORDERS=[];
+const INVENTORY=[];
 
 // STATE
 let curPage='home',prevPage='home';
-let cart=[{b:BOOKS[0],q:1},{b:BOOKS[3],q:1}];
-let wishlist=[1,4,7,9];
+let cart=[];
+let wishlist=[];
 let activeChat=0;
 let mkFilter='all',mkQ='',mkSort='default';
 
@@ -1309,8 +1270,10 @@ function scard(s){
 
 // RENDERS
 function renderHome(){
-  $('home-books').innerHTML=BOOKS.slice(0,8).map(b=>bcard(b,`openBook(${b.id})`)).join('');
-  $('home-stores').innerHTML=STORES.slice(0,2).map(s=>scard(s)).join('');
+  const emptyBooks='<div class="empty"><svg><use href="#s-book"/></svg><div class="empty-title">No books yet</div><div class="empty-sub">Be the first to list a book!</div><button class="btn btnP" style="margin-top:14px" onclick="openModal(\'list-modal\')">List a Book</button></div>';
+  const emptyStores='<div class="empty"><svg><use href="#s-store"/></svg><div class="empty-title">No bookstores yet</div><div class="empty-sub">Stores will appear here once they join</div></div>';
+  $('home-books').innerHTML=BOOKS.length ? BOOKS.slice(0,8).map(b=>bcard(b,`openBook(${b.id})`)).join('') : emptyBooks;
+  $('home-stores').innerHTML=STORES.length ? STORES.slice(0,2).map(s=>scard(s)).join('') : emptyStores;
 }
 
 function renderMk(){
@@ -1392,46 +1355,43 @@ function renderSearch(){
 }
 
 function renderProfile(){
-  $('prof-books').innerHTML=BOOKS.slice(0,6).map(b=>bcard(b,`openBook(${b.id})`)).join('');
-  $('prof-orders').innerHTML=ORDERS.map(o=>`<div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="ostatus ${o.sc}">${o.status}</div>
-      <div style="font-size:11px;color:var(--stone)">${o.date}</div>
-    </div>
-    <div style="font-weight:600;font-size:13px">${o.title}</div>
-    <div style="font-size:11px;color:var(--stone);margin:2px 0 7px">${o.author}</div>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div style="font-weight:700;color:var(--amber)">${o.price}</div>
-      <button class="btn btnO btnSm" onclick="showToast('📦 Tracking opened')">Track</button>
-    </div>
-  </div>`).join('');
-  $('prof-reviews').innerHTML=`<div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
-      <div style="width:34px;height:34px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px">SR</div>
-      <div><div style="font-weight:600;font-size:13px">Sara Ramos</div><div style="display:flex;gap:2px">${stars().repeat(5)}</div></div>
-      <div style="margin-left:auto;font-size:11px;color:var(--stone)">May 10</div>
-    </div>
-    <div style="font-size:12.5px;color:var(--stone);line-height:1.65">Book in perfect condition, exactly as described. Fast shipping — would buy again!</div>
-  </div>
-  <div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
-      <div style="width:34px;height:34px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px">MK</div>
-      <div><div style="font-weight:600;font-size:13px">Marcus Kofi</div><div style="display:flex;gap:2px">${stars().repeat(5)}</div></div>
-      <div style="margin-left:auto;font-size:11px;color:var(--stone)">May 8</div>
-    </div>
-    <div style="font-size:12.5px;color:var(--stone);line-height:1.65">Honest seller, great communication. Would buy from again.</div>
-  </div>`;
+  // Fill profile header from current user
+  if(currentUser){
+    const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const since = new Date(currentUser.created_at).getFullYear();
+    const emailHandle = currentUser.email?.split('@')[0];
+    if($('prof-av')) $('prof-av').textContent = initials;
+    if($('prof-name')) $('prof-name').textContent = name;
+    if($('prof-meta')) $('prof-meta').textContent = `@${emailHandle} · Member since ${since}`;
+    // Update nav avatar too
+    document.querySelectorAll('.av').forEach(el => el.textContent = initials);
+  } else {
+    if($('prof-name')) $('prof-name').textContent = 'Guest';
+    if($('prof-meta')) $('prof-meta').textContent = 'Not signed in';
+  }
+  $('prof-books').innerHTML='<div class="empty"><svg><use href="#s-book"/></svg><div class="empty-title">No listings yet</div><div class="empty-sub">List your first book to get started</div><button class="btn btnP" style="margin-top:14px" onclick="openModal(\'list-modal\')">List a Book</button></div>';
+  $('prof-orders').innerHTML='<div class="empty"><svg><use href="#s-bag"/></svg><div class="empty-title">No orders yet</div><div class="empty-sub">Your purchase history will appear here</div></div>';
+  $('prof-reviews').innerHTML='<div class="empty"><svg><use href="#s-star"/></svg><div class="empty-title">No reviews yet</div><div class="empty-sub">Reviews from buyers will appear here</div></div>';
 }
 
 function renderNotifs(){
-  $('notif-list').innerHTML=NOTIFS.map(n=>`<div class="nitem ${n.unread?'unread':''}">
-    <div class="nicon" style="background:${n.bg}"><svg style="stroke:${n.sc}"><use href="#${n.ico}"/></svg></div>
-    <div class="ntxt"><div class="ntitle">${n.title}</div><div class="ntime">${n.time}</div></div>
-    ${n.unread?'<div class="ndot"></div>':''}
-  </div>`).join('');
+  $('notif-list').innerHTML=NOTIFS.length
+    ? NOTIFS.map(n=>`<div class="nitem ${n.unread?'unread':''}">
+        <div class="nicon" style="background:${n.bg}"><svg style="stroke:${n.sc}"><use href="#${n.ico}"/></svg></div>
+        <div class="ntxt"><div class="ntitle">${n.title}</div><div class="ntime">${n.time}</div></div>
+        ${n.unread?'<div class="ndot"></div>':''}
+      </div>`).join('')
+    : '<div class="empty" style="padding:50px 20px"><svg><use href="#s-bell"/></svg><div class="empty-title">No notifications</div><div class="empty-sub">You\'re all caught up!</div></div>';
 }
 
 function renderChats(){
+  if(!CHATS.length){
+    $('chat-threads').innerHTML='<div class="empty" style="padding:30px 20px"><svg><use href="#s-chat"/></svg><div class="empty-title">No messages yet</div><div class="empty-sub">Start a conversation with a seller</div></div>';
+    $('msgs-hdr').innerHTML='';
+    $('msgs-area').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--stone);font-size:13px">Select a conversation</div>';
+    return;
+  }
   $('chat-threads').innerHTML=CHATS.map((c,i)=>`<div class="cthread ${i===activeChat?'on':''}" onclick="selChat(${i})">
     <div class="cav" style="background:${c.col}">${c.ini}</div>
     <div class="cprev"><div class="cname">${c.name}</div><div class="clast">${c.prev}</div></div>
@@ -1459,57 +1419,55 @@ function renderMsgs(){
 }
 
 function renderDash(){
-  // Chart
   const months=['Nov','Dec','Jan','Feb','Mar','Apr','May'];
-  const vals=[8200,9400,7100,11200,10800,12400,14700];
-  const max=Math.max(...vals);
+  const vals=[0,0,0,0,0,0,0];
+  const max=Math.max(...vals,1);
   $('dash-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center">
-    <div class="cbar" style="height:${Math.round(v/max*90)}px;background:${i===6?'var(--amber)':'var(--amber-l)'};border:${i===6?'':'none'}" title="$${(v/1000).toFixed(1)}k">
+    <div class="cbar" style="height:${Math.round(v/max*90)||4}px;background:${i===6?'var(--amber)':'var(--amber-l)'}" title="$${(v/1000).toFixed(1)}k">
       <div class="cbar-val">$${(v/1000).toFixed(1)}k</div>
     </div>
   </div>`).join('');
   $('dash-chart-lbls').innerHTML=months.map(m=>`<div class="cbar-lbl" style="flex:1;text-align:center">${m}</div>`).join('');
-  // Orders
-  $('dash-orders').innerHTML=ORDERS.slice(0,3).map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
-    <div style="width:38px;height:57px;border-radius:6px;flex-shrink:0;background:var(--stone-l);display:flex;align-items:center;justify-content:center">
-      <svg width="16" height="16" fill="none" stroke="var(--stone)" stroke-width="1.8"><use href="#s-book"/></svg>
-    </div>
-    <div style="flex:1;min-width:0">
-      <div style="font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.title}</div>
-      <div style="font-size:11px;color:var(--stone);margin:1px 0">${o.author}</div>
-      <div class="ostatus ${o.sc}" style="margin-top:4px">${o.status}</div>
-    </div>
-    <div style="font-weight:700;color:var(--amber);font-size:13px;flex-shrink:0">${o.price}</div>
-  </div>`).join('');
+  $('dash-orders').innerHTML=ORDERS.length
+    ? ORDERS.slice(0,3).map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
+        <div style="width:38px;height:57px;border-radius:6px;flex-shrink:0;background:var(--stone-l);display:flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" fill="none" stroke="var(--stone)" stroke-width="1.8"><use href="#s-book"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.title}</div>
+          <div style="font-size:11px;color:var(--stone);margin:1px 0">${o.author}</div>
+          <div class="ostatus ${o.sc}" style="margin-top:4px">${o.status}</div>
+        </div>
+        <div style="font-weight:700;color:var(--amber);font-size:13px;flex-shrink:0">${o.price}</div>
+      </div>`).join('')
+    : '<div class="empty"><svg><use href="#s-bag"/></svg><div class="empty-title">No orders yet</div><div class="empty-sub">Your purchase history will appear here</div></div>';
 }
 
 function renderStoreDash(){
-  // Inventory
-  $('inv-list').innerHTML=INVENTORY.map(iv=>`<div class="inv-row">
-    <div class="inv-cov" style="background:var(--stone-l);color:var(--stone)">${iv.title.split(' ')[0]}</div>
-    <div class="inv-info">
-      <div class="inv-title">${iv.title}</div>
-      <div class="inv-meta">${iv.sold} sold · Stock: ${iv.stock}</div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
-      <div class="inv-price">${iv.price}</div>
-      <div class="inv-stock ${iv.sc}">${iv.sc==='in-stock'?'In Stock':iv.sc==='low-stock'?'Low Stock':'Out of Stock'}</div>
-    </div>
-  </div>`).join('');
-  // Store orders
-  $('store-orders-list').innerHTML=ORDERS.map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
-    <div style="flex:1"><div style="font-weight:600;font-size:12.5px">${o.title}</div><div style="font-size:11px;color:var(--stone);margin-top:1px">${o.date}</div></div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div style="font-weight:700;color:var(--amber);font-size:13px">${o.price}</div>
-      <div class="ostatus ${o.sc}">${o.status}</div>
-    </div>
-  </div>`).join('');
-  // Store chart
-  const svals=[12400,15600,11200,18900,17400,21200,24780];
+  $('inv-list').innerHTML=INVENTORY.length
+    ? INVENTORY.map(iv=>`<div class="inv-row">
+        <div class="inv-cov" style="background:var(--stone-l);color:var(--stone)">${iv.title.split(' ')[0]}</div>
+        <div class="inv-info"><div class="inv-title">${iv.title}</div><div class="inv-meta">${iv.sold} sold · Stock: ${iv.stock}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
+          <div class="inv-price">${iv.price}</div>
+          <div class="inv-stock ${iv.sc}">${iv.sc==='in-stock'?'In Stock':iv.sc==='low-stock'?'Low Stock':'Out of Stock'}</div>
+        </div>
+      </div>`).join('')
+    : '<div class="empty" style="padding:30px 0"><svg><use href="#s-book"/></svg><div class="empty-title">No books in inventory</div><div class="empty-sub">Add your first book to get started</div></div>';
+  $('store-orders-list').innerHTML=ORDERS.length
+    ? ORDERS.map(o=>`<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px">
+        <div style="flex:1"><div style="font-weight:600;font-size:12.5px">${o.title}</div><div style="font-size:11px;color:var(--stone);margin-top:1px">${o.date}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="font-weight:700;color:var(--amber);font-size:13px">${o.price}</div>
+          <div class="ostatus ${o.sc}">${o.status}</div>
+        </div>
+      </div>`).join('')
+    : '<div class="empty" style="padding:30px 0"><svg><use href="#s-bag"/></svg><div class="empty-title">No orders yet</div></div>';
+  const svals=[0,0,0,0,0,0,0];
   const sm=['Nov','Dec','Jan','Feb','Mar','Apr','May'];
-  const smax=Math.max(...svals);
+  const smax=Math.max(...svals,1);
   $('store-chart').innerHTML=svals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center">
-    <div class="cbar" style="height:${Math.round(v/smax*90)}px;background:${i===6?'var(--blue)':'var(--blue-l)'}">
+    <div class="cbar" style="height:${Math.round(v/smax*90)||4}px;background:${i===6?'var(--blue)':'var(--blue-l)'}">
       <div class="cbar-val" style="color:var(--blue)">$${(v/1000).toFixed(1)}k</div>
     </div>
   </div>`).join('');
@@ -1852,6 +1810,7 @@ async function placeOrderDB(){
 async function initApp(){
   const {data:{session}} = await sb.auth.getSession();
   currentUser = session?.user ?? null;
+  updateUserUI();
   renderHome(); updCartBadge(); updWishBadge();
 }
 
