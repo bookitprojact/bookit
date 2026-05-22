@@ -1672,15 +1672,27 @@ async function doSignIn(){
   const password = $('signin-password')?.value || '';
   if(!email||!password){showToast('❌ Enter email and password');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('❌ Enter a valid email');return;}
-  showToast('⏳ Signing in...');
-  const {error} = await sb.auth.signInWithPassword({email, password});
-  if(error){
-    if(error.message.includes('Invalid login')) showToast('❌ Incorrect email or password');
-    else showToast('❌ '+error.message);
-    return;
+  const btn = document.querySelector('#auth-signin .btnP');
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
+  try {
+    const {data, error} = await sb.auth.signInWithPassword({email, password});
+    if(error){
+      const msg = error.message || '';
+      if(msg.includes('Invalid login credentials') || msg.includes('invalid_credentials'))
+        showToast('❌ Incorrect email or password');
+      else if(msg.includes('Email not confirmed'))
+        showToast('📧 Please confirm your email first — check your inbox');
+      else if(msg.includes('Too many requests'))
+        showToast('⏳ Too many attempts — wait a moment');
+      else
+        showToast('❌ '+msg);
+      return;
+    }
+    showToast('👋 Welcome back!');
+    go('dashboard');
+  } finally {
+    if(btn){btn.textContent='Sign In';btn.disabled=false;}
   }
-  showToast('👋 Welcome back!');
-  go('dashboard');
 }
 
 async function doSignUp(){
@@ -1690,11 +1702,31 @@ async function doSignUp(){
   if(!name||!email||!password){showToast('❌ Fill all fields');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('❌ Enter a valid email');return;}
   if(password.length<6){showToast('❌ Password must be 6+ chars');return;}
-  showToast('⏳ Creating account...');
-  const {error} = await sb.auth.signUp({email, password, options:{data:{full_name:name}}});
-  if(error){showToast('❌ '+error.message);return;}
-  showToast('🎉 Account created! Check your email to confirm.');
-  go('dashboard');
+  const btn = document.querySelector('#auth-reg .btnP');
+  if(btn){btn.textContent='Creating…';btn.disabled=true;}
+  try {
+    const {data, error} = await sb.auth.signUp({email, password, options:{data:{full_name:name}}});
+    if(error){
+      const msg = error.message || '';
+      if(msg.includes('User already registered') || msg.includes('already been registered'))
+        showToast('❌ Email already registered — try signing in');
+      else if(msg.includes('Password should be'))
+        showToast('❌ Password too weak — use 6+ characters');
+      else
+        showToast('❌ '+msg);
+      return;
+    }
+    // Check if email confirmation is required
+    if(data.user && !data.session){
+      showToast('📧 Check your email to confirm your account!');
+      authTab('in');
+    } else {
+      showToast('🎉 Account created!');
+      go('dashboard');
+    }
+  } finally {
+    if(btn){btn.textContent='Create Account';btn.disabled=false;}
+  }
 }
 
 async function doResetPassword(){
