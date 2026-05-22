@@ -1031,14 +1031,14 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
       </div>
       <div id="auth-signin">
         <div class="asocial">
-          <div class="asocial-btn"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
-          <div class="asocial-btn"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
+          <div class="asocial-btn" onclick="doSocialSignIn('google')"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
+          <div class="asocial-btn" onclick="doSocialSignIn('facebook')"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
         </div>
         <div class="aor">or continue with email</div>
-        <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
-        <div class="fld"><label>Password</label><input type="password" placeholder="••••••••"></div>
+        <div class="fld"><label>Email</label><input id="signin-email" type="email" placeholder="you@email.com" autocomplete="email"></div>
+        <div class="fld"><label>Password</label><input id="signin-password" type="password" placeholder="••••••••" autocomplete="current-password"></div>
         <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="doSignIn()">Sign In</button>
-        <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--stone)">Forgot password? <span style="color:var(--amber);cursor:pointer">Reset</span></div>
+        <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--stone)">Forgot password? <span style="color:var(--amber);cursor:pointer" onclick="doResetPassword()">Reset</span></div>
       </div>
       <div id="auth-reg" style="display:none">
         <div style="font-size:12.5px;font-weight:600;margin-bottom:10px">Choose Account Type</div>
@@ -1055,13 +1055,13 @@ body.dark .fld input:focus,.dark .fld select:focus,.dark .fld textarea:focus,.da
           </div>
         </div>
         <div class="asocial">
-          <div class="asocial-btn"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
-          <div class="asocial-btn"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
+          <div class="asocial-btn" onclick="doSocialSignIn('google')"><svg width="16" height="16"><use href="#sg"/></svg>Google</div>
+          <div class="asocial-btn" onclick="doSocialSignIn('facebook')"><svg width="16" height="16"><use href="#sf"/></svg>Facebook</div>
         </div>
         <div class="aor">or register with email</div>
-        <div class="fld"><label>Full Name</label><input placeholder="Ahmed Jalali"></div>
-        <div class="fld"><label>Email</label><input type="email" placeholder="you@email.com"></div>
-        <div class="fld"><label>Password</label><input type="password" placeholder="Create password"></div>
+        <div class="fld"><label>Full Name</label><input id="reg-name" placeholder="Ahmed Jalali" autocomplete="name"></div>
+        <div class="fld"><label>Email</label><input id="reg-email" type="email" placeholder="you@email.com" autocomplete="email"></div>
+        <div class="fld"><label>Password</label><input id="reg-password" type="password" placeholder="Create password" autocomplete="new-password"></div>
         <button class="btn btnP" style="width:100%;justify-content:center;margin-top:4px" onclick="doSignUp()">Create Account</button>
       </div>
     </div>
@@ -1668,30 +1668,52 @@ function showToast(msg){
 }
 // ===== SUPABASE AUTH FUNCTIONS =====
 async function doSignIn(){
-  const email = document.querySelector('#auth-signin input[type="email"]').value.trim();
-  const password = document.querySelector('#auth-signin input[type="password"]').value;
+  const email = ($('signin-email')?.value || '').trim();
+  const password = $('signin-password')?.value || '';
   if(!email||!password){showToast('❌ Enter email and password');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('❌ Enter a valid email');return;}
   showToast('⏳ Signing in...');
   const {error} = await sb.auth.signInWithPassword({email, password});
-  if(error){showToast('❌ '+error.message);return;}
+  if(error){
+    if(error.message.includes('Invalid login')) showToast('❌ Incorrect email or password');
+    else showToast('❌ '+error.message);
+    return;
+  }
   showToast('👋 Welcome back!');
   go('dashboard');
 }
 
 async function doSignUp(){
-  const name = document.querySelector('#auth-reg input[placeholder="Ahmed Jalali"]').value.trim();
-  const email = document.querySelector('#auth-reg input[type="email"]').value.trim();
-  const password = document.querySelector('#auth-reg input[type="password"]').value;
+  const name = ($('reg-name')?.value || '').trim();
+  const email = ($('reg-email')?.value || '').trim();
+  const password = $('reg-password')?.value || '';
   if(!name||!email||!password){showToast('❌ Fill all fields');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('❌ Enter a valid email');return;}
   if(password.length<6){showToast('❌ Password must be 6+ chars');return;}
   showToast('⏳ Creating account...');
   const {error} = await sb.auth.signUp({email, password, options:{data:{full_name:name}}});
   if(error){showToast('❌ '+error.message);return;}
-  showToast('🎉 Account created! Check your email.');
+  showToast('🎉 Account created! Check your email to confirm.');
   go('dashboard');
 }
 
-async function doSignOut(){
+async function doResetPassword(){
+  const email = ($('signin-email')?.value || '').trim();
+  if(!email){showToast('❌ Enter your email first');return;}
+  showToast('⏳ Sending reset link...');
+  const {error} = await sb.auth.resetPasswordForEmail(email);
+  if(error){showToast('❌ '+error.message);return;}
+  showToast('📧 Reset link sent to your email!');
+}
+
+async function doSocialSignIn(provider){
+  showToast('⏳ Connecting...');
+  const {error} = await sb.auth.signInWithOAuth({
+    provider,
+    options:{ redirectTo: window.location.origin + window.location.pathname }
+  });
+  if(error){showToast('❌ '+error.message);}
+}
   await sb.auth.signOut();
   currentUser = null;
   showToast('👋 Signed out');
