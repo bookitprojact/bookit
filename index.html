@@ -1701,13 +1701,13 @@ body.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1) }
         <svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8pxdata-ar="الإشعارات" data-en="Notifications">الإشعارات</div>
+    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px" data-ar="الإشعارات" data-en="Notifications">الإشعارات</div>
     <div class="ssec">
       <div class="srow"><div class="srl"><div class="sicon" style="background:#EEF4FF"><svg style="stroke:#4860C8"><use href="#s-bell"/></svg></div><div><div class="stitle" data-ar="الإشعارات" data-en="Push Notifications">الإشعارات</div><div class="ssub" data-ar="الطلبات والرسائل والعروض" data-en="Orders, messages, deals">الطلبات والرسائل والعروض</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="srl"><div class="sicon" style="background:var(--sage-l)"><svg style="stroke:var(--sage)"><use href="#s-mail"/></svg></div><div><div class="stitle" data-ar="التحديثات بالبريد" data-en="Email Updates">التحديثات بالبريد</div><div class="ssub" data-ar="ملخص أسبوعي" data-en="Weekly digest">ملخص أسبوعي</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="srl"><div class="sicon" style="background:var(--bg3)"><svg style="stroke:var(--ink3)"><use href="#s-moon"/></svg></div><div><div class="stitle">الوضع الداكن</div><div class="ssub">تبديل المظهر</div></div></div><div class="toggle" id="dark-toggle" onclick="toggleDark()"></div></div>
     </div>
-    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8pxdata-ar="البائع" data-en="Seller">البائع</div>
+    <div style="font-size:11px;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px" data-ar="البائع" data-en="Seller">البائع</div>
     <div class="ssec">
       <div class="srow" onclick="go('dashboard')"><div class="srl"><div class="sicon" style="background:var(--gold-l)"><svg style="stroke:var(--gold)"><use href="#s-chart"/></svg></div><div><div class="stitle" data-ar="لوحة البائع" data-en="Seller Dashboard">لوحة البائع</div><div class="ssub" data-ar="المبيعات والإحصاءات" data-en="Sales, analytics, listings">المبيعات والإحصاءات</div></div></div><svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg></div>
       <div class="srow" onclick="go('store-dash')"><div class="srl"><div class="sicon" style="background:var(--blue-l)"><svg style="stroke:var(--blue)"><use href="#s-store"/></svg></div><div><div class="stitle" data-ar="لوحة المكتبة" data-en="Bookstore Dashboard">لوحة المكتبة</div><div class="ssub" data-ar="إدارة مكتبتك" data-en="Manage your store">إدارة مكتبتك</div></div></div><svg width="15" height="15" fill="none" stroke="var(--stone)" stroke-width="2"><use href="#s-right"/></svg></div>
@@ -2281,9 +2281,9 @@ function loadCart(){
 async function saveWishlist(){
   if(currentUser){
     // Save to DB
-    await sb.from('wishlist').delete().eq('user_id',currentUser.id).catch(()=>{});
+    try{ await sb.from('wishlist').delete().eq('user_id',currentUser.id); }catch(e){}
     if(wishlist.length){
-      await sb.from('wishlist').insert(wishlist.map(id=>({user_id:currentUser.id, book_id:id}))).catch(()=>{});
+      try{ await sb.from('wishlist').insert(wishlist.map(id=>({user_id:currentUser.id, book_id:id}))); }catch(e){}
     }
   }
   try{localStorage.setItem('bookit-wish',JSON.stringify(wishlist));}catch(e){}
@@ -2366,20 +2366,15 @@ async function sendMsgClick(){
 }
 function sendMsg(e){if(e.key==='Enter')sendMsgClick();}
 
-// SEARCH — Supabase
+// SEARCH — local fallback
 function doSearch(){
-  const q=$('srch-q').value.trim();
-  if(!q||q.length<2){$('srch-results').innerHTML='';return;}
-  $('srch-results').innerHTML='<div style="text-align:center;padding:20px;color:var(--stone)">Searching...</div>';
-  sb.from('books').select('*')
-    .or(`title.ilike.%${q}%,author.ilike.%${q}%,category.ilike.%${q}%`)
-    .limit(20)
-    .then(({data})=>{
-      const res=data||[];
-      $('srch-results').innerHTML=res.length
-        ?`<div style="font-size:12px;color:var(--stone);margin-bottom:11px;font-weight:500">${res.length} results for "<strong>${q}</strong>"</div><div class="bgrid">${res.map(b=>bcard(b,`openBook('${b.id}')`)).join('')}</div>`
-        :`<div class="empty"><svg><use href="#s-search"/></svg><div class="empty-title">No results for "${q}"</div><div class="empty-sub">Try a different keyword</div></div>`;
-    });
+  const q=$('srch-q').value.toLowerCase();
+  // Try Supabase first, fallback to local
+  const sbQ=$('srch-q').value.trim();
+  if(sbQ.length>=2){ doSearchSupabase(sbQ); return; }
+  const res=BOOKS.filter(b=>b.title&&b.title.toLowerCase().includes(q)||b.author&&b.author.toLowerCase().includes(q)||b.cat&&b.cat.toLowerCase().includes(q));
+  if(!q){renderSearch();return;}
+  $('srch-results').innerHTML=`<div style="font-size:12px;color:var(--stone);margin-bottom:11px;font-weight:500">${res.length} results for "<strong>${q}</strong>"</div><div class="bgrid">${res.map(b=>bcard(b,`openBook('${b.id}')`)).join('')}</div>`;
 }
 function setSearch(q){$('srch-q').value=q;doSearch();}
 
@@ -2430,13 +2425,6 @@ function goBack(){go(prevPage||'home');}
 function setMkF(el,f){document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));el.classList.add('on');mkFilter=f;renderMk();}
 function filterMk(){mkQ=$('mk-q').value;renderMk();}
 function setCat(el){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
-function doSearch(){
-  const q=$('srch-q').value.toLowerCase();
-  const res=BOOKS.filter(b=>b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||b.cat.toLowerCase().includes(q));
-  if(!q){renderSearch();return;}
-  $('srch-results').innerHTML=`<div style="font-size:12px;color:var(--stone);margin-bottom:11px;font-weight:500">${res.length} results for "<strong>${q}</strong>"</div><div class="bgrid">${res.map(b=>bcard(b,`openBook(${b.id})`)).join('')}</div>`;
-}
-function setSearch(q){$('srch-q').value=q;doSearch();}
 function authTab(t){
   $('auth-signin').style.display=t==='in'?'block':'none';
   $('auth-reg').style.display=t==='reg'?'block':'none';
@@ -2640,15 +2628,17 @@ async function placeOrderDB(){
   // Notify each seller
   const sellers = [...new Set(cart.map(ci=>ci.b.seller_id).filter(Boolean))];
   for(const sid of sellers){
-    await sb.from('notifications').insert({
-      user_id: sid,
-      message: `📦 New order from ${fname} — $${total.toFixed(2)}. Contact them to arrange payment.`,
-      type: 'order',
-      order_id: order?.id
-    }).catch(()=>{});
+    try{
+      await sb.from('notifications').insert({
+        user_id: sid,
+        message: `📦 New order from ${fname} — $${total.toFixed(2)}. Contact them to arrange payment.`,
+        type: 'order',
+        order_id: order?.id
+      });
+    }catch(e){}
   }
   // Clear cart
-  await sb.from('cart').delete().eq('user_id',currentUser.id).catch(()=>{});
+  try{ await sb.from('cart').delete().eq('user_id',currentUser.id); }catch(e){}
   cart=[]; updCartBadge();
   if(btn){btn.disabled=false;}
   showToast('🎉 Order sent! The seller will contact you via Chat.');
@@ -2762,12 +2752,12 @@ function requireAuth(page){
   return true;
 }
 
-// SEARCH with Supabase
-async function doSearch(q){
+// SEARCH — Supabase (used by renderMkSupabase)
+async function doSearchSupabase(q){
   if(!q||q.length<2) return;
   const {data} = await sb.from('books').select('*').or(`title.ilike.%${q}%,author.ilike.%${q}%,category.ilike.%${q}%`).limit(20);
   const results = data||[];
-  $('search-results').innerHTML = results.length
+  $('srch-results').innerHTML = results.length
     ? results.map(b=>bcard(b,`openBook('${b.id}')`)).join('')
     : `<div class="empty"><svg><use href="#s-search"/></svg><div class="empty-title">No results for "${q}"</div><div class="empty-sub">Try a different keyword</div></div>`;
 }
@@ -2877,8 +2867,6 @@ function updWishBadge(){
 // Override renderMk to use Supabase when available
 const _renderMkLocal = renderMk;
 function renderMk(){ renderMkSupabase().catch(()=>_renderMkLocal()); }
-
-function placeOrder(){ placeOrderDB(); }
 
 // INIT
 initApp();
